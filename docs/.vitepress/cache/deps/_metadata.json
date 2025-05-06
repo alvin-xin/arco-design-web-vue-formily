@@ -1,0 +1,127 @@
+{
+  "hash": "9581f39d",
+  "configHash": "aac3e1e3",
+  "lockfileHash": "70ec1136",
+  "browserHash": "879c5d79",
+  "optimized": {
+    "vue": {
+      "src": "../../../../node_modules/vue/dist/vue.runtime.esm-bundler.js",
+      "file": "vue.js",
+      "fileHash": "ebd1d9e3",
+      "needsInterop": false
+    },
+    "vitepress > @vue/devtools-api": {
+      "src": "../../../../node_modules/@vue/devtools-api/dist/index.js",
+      "file": "vitepress___@vue_devtools-api.js",
+      "fileHash": "110d0c40",
+      "needsInterop": false
+    },
+    "vitepress > @vueuse/core": {
+      "src": "../../../../node_modules/@vueuse/core/index.mjs",
+      "file": "vitepress___@vueuse_core.js",
+      "fileHash": "1ec0c6ed",
+      "needsInterop": false
+    },
+    "@arco-design/web-vue": {
+      "src": "../../../../node_modules/@arco-design/web-vue/es/index.js",
+      "file": "@arco-design_web-vue.js",
+      "fileHash": "4bd90dfb",
+      "needsInterop": false
+    },
+    "@arco-design/web-vue/es/icon": {
+      "src": "../../../../node_modules/@arco-design/web-vue/es/icon/index.js",
+      "file": "@arco-design_web-vue_es_icon.js",
+      "fileHash": "71c19b60",
+      "needsInterop": false
+    },
+    "copy-to-clipboard": {
+      "src": "../../../../node_modules/copy-to-clipboard/index.js",
+      "file": "copy-to-clipboard.js",
+      "fileHash": "e0595605",
+      "needsInterop": true
+    },
+    "prismjs": {
+      "src": "../../../../node_modules/prismjs/prism.js",
+      "file": "prismjs.js",
+      "fileHash": "025b2285",
+      "needsInterop": true
+    },
+    "escape-html": {
+      "src": "../../../../node_modules/escape-html/index.js",
+      "file": "escape-html.js",
+      "fileHash": "44c387af",
+      "needsInterop": true
+    },
+    "prismjs/components/index": {
+      "src": "../../../../node_modules/prismjs/components/index.js",
+      "file": "prismjs_components_index.js",
+      "fileHash": "4da9bcc9",
+      "needsInterop": true
+    },
+    "@formily/core": {
+      "src": "../../../../node_modules/@formily/core/esm/index.js",
+      "file": "@formily_core.js",
+      "fileHash": "66dd6f46",
+      "needsInterop": false
+    },
+    "@formily/vue": {
+      "src": "../../../../node_modules/@formily/vue/esm/index.js",
+      "file": "@formily_vue.js",
+      "fileHash": "838448d4",
+      "needsInterop": false
+    },
+    "vuedraggable": {
+      "src": "../../../../node_modules/vuedraggable/dist/vuedraggable.umd.js",
+      "file": "vuedraggable.js",
+      "fileHash": "8961948c",
+      "needsInterop": true
+    },
+    "moment": {
+      "src": "../../../../node_modules/moment/dist/moment.js",
+      "file": "moment.js",
+      "fileHash": "fc72df32",
+      "needsInterop": false
+    },
+    "@formily/shared": {
+      "src": "../../../../node_modules/@formily/shared/esm/index.js",
+      "file": "@formily_shared.js",
+      "fileHash": "27835257",
+      "needsInterop": false
+    },
+    "@formily/reactive-vue": {
+      "src": "../../../../node_modules/@formily/reactive-vue/esm/index.js",
+      "file": "@formily_reactive-vue.js",
+      "fileHash": "1d1787ea",
+      "needsInterop": false
+    },
+    "@formily/reactive": {
+      "src": "../../../../node_modules/@formily/reactive/esm/index.js",
+      "file": "@formily_reactive.js",
+      "fileHash": "1c7ec3c2",
+      "needsInterop": false
+    }
+  },
+  "chunks": {
+    "chunk-K3QC3TLX": {
+      "file": "chunk-K3QC3TLX.js"
+    },
+    "chunk-AKVXTLRZ": {
+      "file": "chunk-AKVXTLRZ.js"
+    },
+    "chunk-KWJQIQ2G": {
+      "file": "chunk-KWJQIQ2G.js"
+    },
+    "chunk-L67TUHYQ": {
+      "file": "chunk-L67TUHYQ.js"
+    },
+    "chunk-ATTX7QBI": {
+      "file": "chunk-ATTX7QBI.js"
+    },
+    "chunk-VP2EYFDR": {
+      "file": "chunk-VP2EYFDR.js"
+    },
+    "chunk-PLDDJCW6": {
+      "file": "chunk-PLDDJCW6.js"
+    }
+  }
+}
