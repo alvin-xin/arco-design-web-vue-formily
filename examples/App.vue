@@ -12,7 +12,7 @@
 </template>
 
 <script lang="ts">
-import { Submit, FormItem, ArrayTable, Input, Editable, Cascader, ArrayItems, Space, ArrayCards, ArrayCollapse } from "../src/index";
+import { Submit, FormItem, ArrayTable, Input, Editable, Cascader, ArrayItems, Space, ArrayCards, ArrayCollapse, ArrayTabs, Checkbox } from "../src/index";
 import schema from "./schema";
 import { Card } from "@arco-design/web-vue";
 import { defineComponent } from "vue";
@@ -32,6 +32,8 @@ const fields = createSchemaField({
     Space,
     ArrayCards,
     ArrayCollapse,
+    ArrayTabs,
+    Checkbox,
   },
 });
 

@@ -313,7 +313,66 @@ const schema = {
           'x-component': 'ArrayCollapse.Addition',
         },
       },
-    }
+    },
+
+
+    array_tabs__object_array: {
+      type: 'array',
+      title: 'Array Tabs Object array',
+      'x-decorator': 'FormItem',
+      maxItems: 3,
+      'x-component': 'ArrayTabs',
+      items: {
+        type: 'object',
+        properties: {
+          aaa: {
+            type: 'string',
+            'x-decorator': 'FormItem',
+            title: 'AAA',
+            required: true,
+            'x-component': 'Input',
+          },
+          bbb: {
+            type: 'string',
+            'x-decorator': 'FormItem',
+            title: 'BBB',
+            required: true,
+            'x-component': 'Input',
+          },
+        },
+      },
+    },
+
+
+
+
+    checkbox__single: {
+      type: 'boolean',
+      title: 'Are you sure',
+      'x-decorator': 'FormItem',
+      'x-component': 'Checkbox',
+      'x-component-props': {
+        onInput(e) {
+          console.log(`checked = ${e.target.checked}`)
+        },
+      },
+    },
+    checkbox__multiple: {
+      type: 'array',
+      title: 'Check',
+      enum: [
+        {
+          label: 'Option 1',
+          value: 1,
+        },
+        {
+          label: 'Option 2',
+          value: 2,
+        },
+      ],
+      'x-decorator': 'FormItem',
+      'x-component': 'Checkbox.Group',
+    },
   },
 
 }
