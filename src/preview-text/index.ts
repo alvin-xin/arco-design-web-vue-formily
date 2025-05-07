@@ -63,8 +63,26 @@ const Text = defineComponent<any>({
   },
 })
 
+const Cascader = observer(defineComponent({
+  name: 'PreviewCascader',
+  setup(_props, { attrs, slots }) {
+    
+
+    const getLabels = () => {
+      return h('div', {}, '江西省/南昌市/红谷滩区')
+    }
+
+    return () => {
+      return h(Space, {}, )
+    }
+  }
+}))
+
 export const PreviewText = composeExport(Text, { 
   Input, 
+  
+  Cascader,
+
   Placeholder: PlaceholderContext.Provider,
   usePlaceholder,
 })

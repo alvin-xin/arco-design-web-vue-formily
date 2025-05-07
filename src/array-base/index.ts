@@ -19,7 +19,7 @@ import {
   h,
 } from 'vue'
 import { HandleDirective } from 'vue-slicksort'
-import { composeExport, uuid } from '../__builtins__/shared'
+import { composeExport } from '../__builtins__/shared'
 
 export type KeyMapProps =
   | WeakMap<Record<string, unknown>, string>
@@ -142,7 +142,7 @@ const getDefaultValue = (defaultValue: any, schema: Schema) => {
   if (schema?.items?.type === 'date') return ''
   if (schema?.items?.type === 'datetime') return ''
   if (schema?.items?.type === 'number') return 0
-  if (schema?.items?.type === 'object') return { _X_ROW_KEY: uuid() }
+  if (schema?.items?.type === 'object') return {}
   if (schema?.items?.type === 'string') return ''
   return null
 }
@@ -243,6 +243,7 @@ const ArrayBaseAddition = defineComponent({
           class: `${prefixCls}-addition`,
           type: 'dashed',
           block: true,
+          long: true,
           disabled: array.field.value?.disabled,
           onClick: (e) => {
             if (array.props?.disabled) return

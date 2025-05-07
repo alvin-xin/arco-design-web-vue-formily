@@ -1,150 +1,101 @@
 <template>
-    <FormProvider :form="form">
-      <SchemaField :schema="schema" />
-      <Submit @submit="log">提交</Submit>
-    </FormProvider>
-  </template>
-  
-  <script lang="ts">
-  import { createForm } from '@formily/core'
-  import { FormProvider, createSchemaField } from '@formily/vue'
-  import {
-    Submit,
+  <div :style="{ boxSizing: 'border-box', padding: '8px' }">
+    <Card title="asdf">
+      <FormProvider :form="form">
+        <SchemaField :schema="schema" :scope="{ useAsyncDataSource, transformAddress }" />
+        <Submit @submit="log">提交</Submit>
+      </FormProvider>
+
+      ArrayItems
+    </Card>
+  </div>
+</template>
+
+<script lang="ts">
+import { Submit, FormItem, ArrayTable, Input, Editable, Cascader, ArrayItems, Space, ArrayCards, ArrayCollapse } from "../src/index";
+import schema from "./schema";
+import { Card } from "@arco-design/web-vue";
+import { defineComponent } from "vue";
+
+import { createForm, FieldDataSource, Field } from "@formily/core";
+import { FormProvider, createSchemaField } from "@formily/vue";
+import { action } from "@formily/reactive";
+
+const fields = createSchemaField({
+  components: {
     FormItem,
     ArrayTable,
     Input,
     Editable,
-  } from '../src/index'
-  
-  const fields = createSchemaField({
-    components: {
-      FormItem,
-      ArrayTable,
-      Input,
-      Editable,
-    },
-  })
-  
-  export default {
-    components: { FormProvider, Submit, ...fields },
-    data() {
-      const form = createForm()
-      const schema = {
-        type: 'object',
-        properties: {
-          array: {
-            type: 'array',
-            'x-decorator': 'FormItem',
-            'x-component': 'ArrayTable',
-            'x-component-props': {
-              pagination: { pageSize: 10 },
-              scroll: { x: 800 },
-            },
-            items: {
-              type: 'object',
-              properties: {
-                column1: {
-                  type: 'void',
-                  'x-component': 'ArrayTable.Column',
-                  'x-component-props': {
-                    width: 80,
-                    title: 'Index',
-                    align: 'center',
-                  },
-                  properties: {
-                    index: {
-                      type: 'void',
-                      'x-component': 'ArrayTable.Index',
-                    },
-                  },
-                },
-                column2: {
-                  type: 'void',
-                  'x-component': 'ArrayTable.Column',
-                  'x-component-props': { width: 200, title: 'A1' },
-                  properties: {
-                    a1: {
-                      type: 'string',
-                      'x-decorator': 'Editable',
-                      'x-component': 'Input',
-                    },
-                  },
-                },
-                column3: {
-                  type: 'void',
-                  'x-component': 'ArrayTable.Column',
-                  'x-component-props': { width: 200, title: 'A2' },
-                  properties: {
-                    a2: {
-                      type: 'string',
-                      'x-decorator': 'FormItem',
-                      'x-component': 'Input',
-                    },
-                  },
-                },
-                column4: {
-                  type: 'void',
-                  'x-component': 'ArrayTable.Column',
-                  'x-component-props': { title: 'A3' },
-                  properties: {
-                    a3: {
-                      type: 'string',
-                      'x-decorator': 'FormItem',
-                      'x-component': 'Input',
-                    },
-                  },
-                },
-                column5: {
-                  type: 'void',
-                  'x-component': 'ArrayTable.Column',
-                  'x-component-props': {
-                    title: 'Operations',
-                    prop: 'operations',
-                    width: 200,
-                    fixed: 'right',
-                  },
-                  properties: {
-                    item: {
-                      type: 'void',
-                      'x-component': 'FormItem',
-                      properties: {
-                        remove: {
-                          type: 'void',
-                          'x-component': 'ArrayTable.Remove',
-                        },
-                        moveDown: {
-                          type: 'void',
-                          'x-component': 'ArrayTable.MoveDown',
-                        },
-                        moveUp: {
-                          type: 'void',
-                          'x-component': 'ArrayTable.MoveUp',
-                        },
-                      },
-                    },
-                  },
-                },
-              },
-            },
-            properties: {
-              add: {
-                type: 'void',
-                'x-component': 'ArrayTable.Addition',
-                title: '添加条目',
-              },
-            },
-          },
-        },
+    Cascader,
+    ArrayItems,
+    Space,
+    ArrayCards,
+    ArrayCollapse,
+  },
+});
+
+export default defineComponent({
+  components: { Card, FormProvider, Submit, ...fields },
+  setup() {
+    const form = createForm({
+      // pattern: 'readOnly',  // 设置表单为只读预览态
+      initialValues: {
+        array: [{ a1: "1", a2: "2", a3: "3" }],
+        address: "110106"
       }
-      return {
-        form,
-        schema,
-      }
-    },
-    methods: {
-      log(...v) {
-        console.log(...v)
-      },
-    },
-  }
-  </script>
+    });
+
+    interface AddressInfo {
+      code: string;
+      name: string;
+      cities?: Record<string, AddressInfo>;
+      districts?: Record<string, string>;
+    }
+
+    const transformAddress = (data: Record<string, AddressInfo | string> = {}) => {
+      return Object.entries(data).reduce<FieldDataSource>((buf, [key, value]) => {
+        if (typeof value === "string")
+          return buf.concat({
+            label: value,
+            value: key,
+          });
+        const { name, code, cities, districts } = value;
+        const _cities = transformAddress(cities);
+        const _districts = transformAddress(districts);
+        return buf.concat({
+          label: name,
+          value: code,
+          children: _cities.length ? _cities : _districts.length ? _districts : undefined,
+        });
+      }, []);
+    };
+
+    const useAsyncDataSource = (url: string, transform: (data: any) => any) => (
+      field: Field
+    ) => {
+      field.loading = true;
+      fetch(url)
+        .then((res) => res.json())
+        .then(
+          action.bound?.((data) => {
+            field.dataSource = transform(data);
+            field.loading = false;
+          })
+        );
+    };
+
+    function log(...v) {
+      console.log(...v);
+    }
+
+    return {
+      form,
+      schema,
+      useAsyncDataSource,
+      transformAddress,
+      log,
+    };
+  },
+});
+</script>

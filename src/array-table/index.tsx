@@ -97,38 +97,85 @@ const useArrayTableSources = (
   return parseArrayItems(schemaRef.value.items)
 }
 
+// const indexKey = '__DO_NOT_USE_THIS_PROPERTY_index__'
+// const useArrayTableColumns = (
+//   dataSource: any[],
+//   field: ArrayField,
+//   sources: ObservableColumnSource[]
+// ): TableColumnData[] => {
+//   return sources.reduce((buf, { name, columnProps, schema, display }, key) => {
+//     if (display !== 'visible') return buf
+//     if (!isColumnComponent(schema)) return buf
+//     return buf.concat({
+//       ...columnProps,
+//       key,
+//       dataIndex: name,
+//       render: ({ record }: any) => {
+//         // const index = dataSource.indexOf(record)
+//         const index = record[indexKey]
+
+//         console.log('useArrayTableColumns', index)
+
+//         const children = h(
+//           ArrayBase.Item,
+//           {
+//             key: `${key}${index}`,
+//             index,
+//             record: () => field.value?.[index],
+//           },
+//           () =>
+//             h(RecursionField, {
+//               schema,
+//               name: index,
+//               onlyRenderProperties: true,
+//             })
+//         )
+//         return children
+//       },
+//     })
+//   }, [])
+// }
+const indexKey = '_X_ROW_KEY'
 const useArrayTableColumns = (
   dataSource: any[],
+  field: ArrayField,
   sources: ObservableColumnSource[]
-): TableColumnData[] => {
-  return sources.reduce((buf, { name, columnProps, schema, display }, key) => {
-    if (display !== 'visible') return buf
-    if (!isColumnComponent(schema)) return buf
-    return buf.concat({
-      ...columnProps,
-      key,
-      dataIndex: name,
-      render: ({ record }: any) => {
-        const index = dataSource.indexOf(record)
+): TableColumnData<any> => {
+  return sources.reduce<TableColumnData<any>>(
+    (buf, { name, columnProps, schema, display }, key) => {
+      if (display !== 'visible') return buf
+      if (!isColumnComponent(schema)) return buf
+      return buf.concat({
+        ...columnProps,
+        key,
+        dataIndex: name,
+        render: ({ record }: any) => {
+          const index = record[indexKey]
 
-        const children = h(
-          ArrayBase.Item,
-          {
-            key: `${key}${index}`,
-            index,
-            record,
-          },
-          () =>
+          // const children = (
+          //   <ArrayBase.Item index={index} record={() => field?.value?.[index]}>
+          //     <RecursionField
+          //       schema={schema}
+          //       name={index}
+          //       onlyRenderProperties
+          //     />
+          //   </ArrayBase.Item>
+          // )
+
+          const children = h(ArrayBase.Item, { index, record: () => field?.value?.[index] }, () =>
             h(RecursionField, {
               schema,
               name: index,
               onlyRenderProperties: true,
             })
-        )
-        return children
-      },
-    })
-  }, [])
+          )
+
+          return index > -1 ? children : null
+        },
+      })
+    },
+    []
+  )
 }
 
 const useAddition = () => {
@@ -308,9 +355,13 @@ const ArrayTableInner = observer(
       return () => {
         const props = attrs as unknown as any;
         const field = fieldRef.value
-        const dataSource = Array.isArray(field.value) ? field.value.slice().map((item: any) => Object.assign(item, { _X_ROW_KEY: uuid() })) : [];
+        const dataSource = Array.isArray(field.value) ? field.value.slice() : [];
+        dataSource.forEach((item, index) => { item[indexKey] = index; })
+        // .map((item: any) => Object.assign(item, { _X_ROW_KEY: uuid() }))
+
+
         const sources = useArrayTableSources(fieldRef, schemaRef)
-        const columns = useArrayTableColumns(dataSource, sources)
+        const columns = useArrayTableColumns(dataSource, field, sources)
 
         const pagination = isBool(props.pagination) ? {} : props.pagination
 
@@ -331,8 +382,17 @@ const ArrayTableInner = observer(
               'div', 
               { class: prefixCls }, 
               h(ArrayBase, { keyMap }, () => [
-                h(Table, {  ...attrs, data: dataSource, columns, rowKey: '_X_ROW_KEY', pagination, }),
-
+                h(Table, {  ...attrs, data: dataSource, columns, rowKey: '_X_ROW_KEY', pagination: pagination ? pagination : false, }),
+                h(
+                  'div',
+                  {
+                    style: {
+                      marginTop: '5px',
+                      marginBottom: '5px',
+                    },
+                  },
+                  pager?.()
+                ),
                 renderStateManager(),
                 useAddition(),
               ])
