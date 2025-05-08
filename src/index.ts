@@ -31,4 +31,5 @@ export * from './submit'
 export * from './switch'
 export * from './time-picker'
 // export * from './transfer'
-// export * from './upload'
+export * from './upload'
+export * from "./tree-select"

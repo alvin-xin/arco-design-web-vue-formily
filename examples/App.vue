@@ -43,17 +43,59 @@
 
 <script lang="ts">
 import * as components from "../src/index";
-import { Submit, FormCollapse, FormStep, FormButtonGroup } from "../src/index";
+import { Submit, FormCollapse, FormStep, FormButtonGroup, Upload } from "../src/index";
 import schema from "./schema";
 import { Card, Button } from "@arco-design/web-vue";
-import { defineComponent } from "vue";
+import { defineComponent, h } from "vue";
 
 import { createForm, FieldDataSource, Field } from "@formily/core";
 import { FormProvider, createSchemaField, FormConsumer } from "@formily/vue";
 import { action } from "@formily/reactive";
 
 
-const fields = createSchemaField({ components: components });
+
+// import { Button } from "@arco-design/web-vue"
+// import { Upload } from "../src"
+
+// const UploadButton = () => {
+// return <Button>上传图片</Button>
+// }
+// const NormalUpload = (props, { attrs }) => {
+// return (
+//     <Upload
+//     {...props}
+//     {...attrs}
+//     action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+//     headers={{
+//         authorization: 'authorization-text',
+//     }}
+//     >
+//     <Button>
+//         <UploadOutlined />
+//         上传文件{' '}
+//     </Button>
+//     </Upload>
+// )
+// }
+
+const NormalUpload = defineComponent({
+  inheritAttrs: false,
+  setup(props, { attrs }) {
+    return () =>  {
+      return h(Upload, {
+        ...props,
+        ...attrs,
+        draggable: true,
+        action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
+        headers: {authorization: 'authorization-text'}
+      }, {
+        default: () => [h(Button, { type: 'primary' }, '上传文件')]
+      })
+    }
+  }
+})
+
+const fields = createSchemaField({ components: { ...components, NormalUpload} });
 
 export default defineComponent({
   components: { Card, FormProvider, FormConsumer, Submit, Button, FormButtonGroup, ...fields },
