@@ -3,6 +3,7 @@ import {
   createEffectContext,
   createEffectHook,
   createForm,
+  getLocaleByPath,
   getValidateLocaleIOSCode,
   isArrayField,
   isArrayFieldState,
@@ -72,18 +73,19 @@ import {
   registerValidateRules,
   setValidateLanguage,
   useEffectForm
-} from "./chunk-K3QC3TLX.js";
+} from "./chunk-IFJRZNIX.js";
 import {
   Path
-} from "./chunk-AKVXTLRZ.js";
-import "./chunk-L67TUHYQ.js";
-import "./chunk-PLDDJCW6.js";
+} from "./chunk-4NCPBOGJ.js";
+import "./chunk-BXC2GHWD.js";
+import "./chunk-PR4QN5HX.js";
 export {
   Path as FormPath,
   LifeCycleTypes,
   createEffectContext,
   createEffectHook,
   createForm,
+  getLocaleByPath,
   getValidateLocaleIOSCode,
   isArrayField,
   isArrayFieldState,

@@ -5,7 +5,7 @@
         name="string_array"
         x-decorator="FormItem"
         title="字符串数组"
-        :maxItems="3"
+        :max-items="3"
         x-component="ArrayTabs"
       >
         <SchemaStringField
@@ -18,7 +18,7 @@
         name="array"
         x-decorator="FormItem"
         title="对象数组"
-        :maxItems="3"
+        :max-items="3"
         x-component="ArrayTabs"
       >
         <SchemaObjectField>
@@ -45,7 +45,7 @@
   </FormProvider>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts">
 import { createForm } from '@formily/core'
 import { FormProvider, createSchemaField } from '@formily/vue'
 import {
@@ -55,21 +55,38 @@ import {
   Input,
   Select,
   ArrayTabs,
-} from 'arco-vue-formily'
+} from 'arco-design-web-vue-formily'
+import { Button } from '@arco-design/web-vue'
 
-const { SchemaField, SchemaArrayField, SchemaObjectField, SchemaStringField } =
-  createSchemaField({
-    components: {
-      FormItem,
-      Input,
-      Select,
-      ArrayTabs,
+const SchemaField = createSchemaField({
+  components: {
+    FormItem,
+    Input,
+    Select,
+    ArrayTabs,
+  },
+})
+
+export default {
+  components: {
+    FormProvider,
+    FormButtonGroup,
+    Submit,
+    ...SchemaField,
+  },
+
+  data() {
+    const form = createForm()
+
+    return {
+      form,
+    }
+  },
+  methods: {
+    log(values) {
+      console.log(values)
     },
-  })
-
-const form = createForm()
-const log = (values) => {
-  console.log(values)
+  },
 }
 </script>
 

@@ -5,46 +5,22 @@
         name="upload"
         title="上传"
         x-decorator="FormItem"
-        x-component="Upload"
-        :x-component-props="{
-          action: 'https://formily-vue.free.beeceptor.com/file',
-          textContent: '上传',
-        }"
+        x-component="NormalUpload"
         required
       />
       <SchemaArrayField
         name="upload2"
         title="卡片上传"
         x-decorator="FormItem"
-        x-component="Upload"
-        :x-component-props="{
-          listType: 'picture-card',
-          action: 'https://formily-vue.free.beeceptor.com/file',
-        }"
+        x-component="CardUpload"
         required
       />
       <SchemaArrayField
         name="upload3"
         title="拖拽上传"
         x-decorator="FormItem"
-        x-component="Upload"
-        :x-component-props="{
-          action: 'https://formily-vue.free.beeceptor.com/file',
-          textContent: '将文件拖到此处，或者点击上传',
-          drag: true,
-        }"
+        x-component="DraggerUpload"
         required
-      />
-      <SchemaArrayField
-        name="custom"
-        title="自定义按钮"
-        x-decorator="FormItem"
-        x-component="Upload"
-        :x-component-props="{
-          action: 'https://formily-vue.free.beeceptor.com/file',
-        }"
-        required
-        :x-content="UploadButton"
       />
     </SchemaField>
     <FormButtonGroup align-form-item>
@@ -53,8 +29,7 @@
   </Form>
 </template>
 
-<script lang="ts" setup>
-import { h } from 'vue'
+<script lang="tsx">
 import { createForm } from '@formily/core'
 import { createSchemaField } from '@formily/vue'
 import {
@@ -63,22 +38,98 @@ import {
   Upload,
   Submit,
   FormButtonGroup,
-} from 'arco-vue-formily'
-import { ElButton } from 'element-plus'
+} from 'arco-design-web-vue-formily'
+import { Button } from '@arco-design/web-vue'
+import { IconUpload, IconStorage } from '@arco-design/web-vue/es/icon'
+import { defineComponent, h } from 'vue'
 
-const UploadButton = () => {
-  return h(ElButton, {}, { default: () => '上传图片' })
-}
+const UploadButton = defineComponent({
+  setup() {
+    return () => h(Button, {}, { default: () => '上传图片' })
+  }
+})
+
+const NormalUpload = defineComponent({
+  inheritAttrs: false,
+  setup(props, { attrs }) {
+    return () => h(Upload, {
+      ...props,
+      ...attrs,
+      action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
+      headers: {
+        authorization: 'authorization-text'
+      }
+    }, {
+      default: () => h(Button, {}, {
+        default: () => [
+          h(IconUpload),
+          '上传文件'
+        ]
+      })
+    })
+  }
+})
+
+const CardUpload = defineComponent({
+  inheritAttrs: false,
+  setup(props, { attrs }) {
+    return () => h(Upload, {
+      ...props,
+      ...attrs,
+      action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
+      listType: 'picture-card',
+      headers: {
+        authorization: 'authorization-text'
+      }
+    }, {
+      default: () => h(IconUpload, { style: { fontSize: '20px' } })
+    })
+  }
+})
+
+const DraggerUpload = defineComponent({
+  inheritAttrs: false,
+  setup(props, { attrs }) {
+    return () => h('div', {}, [
+      h(Upload.Dragger, {
+        ...props,
+        ...attrs,
+        action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76'
+      }, {
+        default: () => [
+          h('p', { class: 'ant-upload-drag-icon' }, [h(IconStorage)]),
+          h('p', { class: 'ant-upload-text' }, 'Click or drag file to this area to upload'),
+          h('p', { class: 'ant-upload-hint' }, 'Support for a single or bulk upload. Strictly prohibit from uploading company data or other band files')
+        ]
+      })
+    ])
+  }
+})
+
 
 const form = createForm()
-const { SchemaField, SchemaArrayField } = createSchemaField({
+const fields = createSchemaField({
   components: {
+    NormalUpload,
+    CardUpload,
+    DraggerUpload,
     FormItem,
-    Upload,
   },
 })
 
-const onSubmit = (value) => {
-  console.log(value)
+export default {
+  // eslint-disable-next-line vue/no-reserved-component-names
+  components: { Form, ...fields, Submit, FormButtonGroup },
+  data() {
+    return {
+      UploadButton,
+      form,
+    }
+  },
+  methods: {
+    onSubmit(value) {
+      console.log(value)
+    },
+  },
 }
 </script>

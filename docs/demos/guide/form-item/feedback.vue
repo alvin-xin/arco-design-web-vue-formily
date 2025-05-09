@@ -200,7 +200,7 @@
   </FormProvider>
 </template>
 
-<script setup lang="ts">
+<script lang="ts">
 import { h } from 'vue'
 import { createForm } from '@formily/core'
 import { createSchemaField, FormProvider } from '@formily/vue'
@@ -213,20 +213,18 @@ import {
   DatePicker,
   FormLayout,
   TimePicker,
-} from 'arco-vue-formily'
+} from 'arco-design-web-vue-formily'
+// import { CheckOutlined } from '@ant-design/icons-vue'
+import { IconCheck } from "@arco-design/web-vue/es/icon"
 
 const SuccessIcon = () => {
-  return h('i', {
-    class: 'el-icon-circle-check',
-    style: { color: '#8AE65C' },
-  })
+  return h(IconCheck, { style: { color: '#8AE65C' } })
 }
 
 const Title = (props, { slots }) => {
   return h('p', props, slots.default?.())
 }
-
-const { SchemaField, SchemaVoidField, SchemaStringField } = createSchemaField({
+const fields = createSchemaField({
   components: {
     Title,
     FormItem,
@@ -239,5 +237,15 @@ const { SchemaField, SchemaVoidField, SchemaStringField } = createSchemaField({
     TimePicker,
   },
 })
-const form = createForm()
+
+export default {
+  components: { FormProvider, ...fields },
+  data() {
+    const form = createForm()
+    return {
+      form,
+      SuccessIcon,
+    }
+  },
+}
 </script>

@@ -1,10 +1,10 @@
 <template>
-  <ElButton @click="handleOpen">点击打开表单</ElButton>
+  <Button @click="handleOpen">点击打开表单</Button>
 </template>
 
-<script setup lang="tsx">
-import { FormDrawer, FormLayout, FormItem, Input } from 'arco-vue-formily'
-import { ElButton } from 'element-plus'
+<script lang="tsx">
+import { FormDrawer, FormLayout, FormItem, Input } from 'arco-design-web-vue-formily'
+import { Button } from '@arco-design/web-vue'
 import { createSchemaField } from '@formily/vue'
 
 const { SchemaField } = createSchemaField({
@@ -67,18 +67,27 @@ const DrawerForm = {
   },
 }
 
-const handleOpen = () => {
-  FormDrawer('抽屉表单', DrawerForm)
-    .forOpen((props, next) => {
-      setTimeout(() => {
-        next()
-      }, 1000)
-    })
-    .open({
-      initialValues: {
-        aaa: '123',
-      },
-    })
-    .then(console.log)
+export default {
+  // eslint-disable-next-line vue/no-reserved-component-names
+  components: { Button },
+  data() {
+    return {}
+  },
+  methods: {
+    handleOpen() {
+      FormDrawer('抽屉表单', DrawerForm as any)
+        .forOpen((props, next) => {
+          setTimeout(() => {
+            next()
+          }, 1000)
+        })
+        .open({
+          initialValues: {
+            aaa: '123',
+          },
+        })
+        .then(console.log)
+    },
+  },
 }
 </script>

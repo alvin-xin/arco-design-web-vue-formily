@@ -65,7 +65,7 @@
   </FormProvider>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts">
 import { createForm } from '@formily/core'
 import { FormProvider, Field, VoidField, ObjectField } from '@formily/vue'
 import {
@@ -75,12 +75,34 @@ import {
   Input,
   DatePicker,
   Editable,
-} from 'arco-vue-formily'
+} from 'arco-design-web-vue-formily'
 
-const form = createForm()
+export default {
+  components: {
+    FormButtonGroup,
+    FormProvider,
+    Submit,
+    Field,
+    VoidField,
+    ObjectField,
+  },
 
-const log = (values) => {
-  console.log(values)
+  data() {
+    const form = createForm()
+
+    return {
+      FormItem,
+      Input,
+      DatePicker,
+      Editable,
+      form,
+    }
+  },
+  methods: {
+    log(values) {
+      console.log(values)
+    },
+  },
 }
 </script>
 

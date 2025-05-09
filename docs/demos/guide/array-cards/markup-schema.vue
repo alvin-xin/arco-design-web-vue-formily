@@ -3,7 +3,7 @@
     <SchemaField>
       <SchemaArrayField
         name="string_array"
-        :maxItems="3"
+        :max-items="3"
         x-decorator="FormItem"
         x-component="ArrayCards"
         :x-component-props="{
@@ -27,7 +27,7 @@
       </SchemaArrayField>
       <SchemaArrayField
         name="array"
-        :maxItems="3"
+        :max-items="3"
         x-decorator="FormItem"
         x-component="ArrayCards"
         :x-component-props="{
@@ -54,20 +54,19 @@
   </FormProvider>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts">
 import { createForm } from '@formily/core'
 import { FormProvider, createSchemaField } from '@formily/vue'
-import { FormItem, Submit, Input, ArrayCards } from 'arco-vue-formily'
+import {
+  FormItem,
+  FormButtonGroup,
+  Submit,
+  Input,
+  ArrayCards,
+} from 'arco-design-web-vue-formily'
+import { Button } from '@arco-design/web-vue'
 
-const form = createForm()
-
-const {
-  SchemaField,
-  SchemaArrayField,
-  SchemaVoidField,
-  SchemaStringField,
-  SchemaObjectField,
-} = createSchemaField({
+const SchemaField = createSchemaField({
   components: {
     FormItem,
     Input,
@@ -75,8 +74,25 @@ const {
   },
 })
 
-const log = (values) => {
-  console.log(values)
+export default {
+  components: {
+    FormProvider,
+    Submit,
+    ...SchemaField,
+  },
+
+  data() {
+    const form = createForm()
+
+    return {
+      form,
+    }
+  },
+  methods: {
+    log(values) {
+      console.log(values)
+    },
+  },
 }
 </script>
 

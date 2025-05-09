@@ -9,7 +9,7 @@
     <SchemaField>
       <SchemaStringField
         name="input"
-        title="输入框"
+        title="输入框1"
         x-decorator="FormItem"
         x-component="Input"
         :required="true"
@@ -32,13 +32,13 @@
         :required="true"
       />
     </SchemaField>
-    <FormButtonGroup alignFormItem>
+    <FormButtonGroup align-form-item>
       <Submit>提交</Submit>
     </FormButtonGroup>
   </Form>
 </template>
 
-<script>
+<script lang="ts">
 import { createForm } from '@formily/core'
 import { createSchemaField } from '@formily/vue'
 import {
@@ -48,12 +48,13 @@ import {
   FormItem,
   FormButtonGroup,
   Submit,
-} from 'arco-vue-formily'
+} from 'arco-design-web-vue-formily'
 
 const form = createForm()
 const fields = createSchemaField({ components: { Input, Select, FormItem } })
 
 export default {
+  // eslint-disable-next-line vue/no-reserved-component-names
   components: { FormButtonGroup, Submit, Form, ...fields },
   data() {
     return {

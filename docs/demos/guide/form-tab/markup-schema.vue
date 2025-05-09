@@ -10,7 +10,7 @@
           type="void"
           name="tab1"
           x-component="FormTab.TabPane"
-          :x-component-props="{ label: 'A1' }"
+          :x-component-props="{ tab: 'A1' }"
         >
           <SchemaStringField
             name="aaa"
@@ -23,7 +23,7 @@
         <SchemaVoidField
           name="tab2"
           x-component="FormTab.TabPane"
-          :x-component-props="{ label: 'A2' }"
+          :x-component-props="{ tab: 'A2' }"
         >
           <SchemaStringField
             name="bbb"
@@ -36,7 +36,7 @@
         <SchemaVoidField
           name="tab3"
           x-component="FormTab.TabPane"
-          :x-component-props="{ label: 'A3' }"
+          :x-component-props="{ tab: 'A3' }"
         >
           <SchemaStringField
             name="ccc"
@@ -48,8 +48,8 @@
         </SchemaVoidField>
       </SchemaVoidField>
     </SchemaField>
-    <FormButtonGroup alignFormItem>
-      <ElButton
+    <FormButtonGroup align-form-item>
+      <Button
         @click="
           () => {
             form.query('tab3').take((field) => {
@@ -59,8 +59,8 @@
         "
       >
         显示/隐藏最后一个Tab
-      </ElButton>
-      <ElButton
+      </Button>
+      <Button
         @click="
           () => {
             formTab.setActiveKey('tab2')
@@ -68,7 +68,7 @@
         "
       >
         切换第二个Tab
-      </ElButton>
+      </Button>
       <Submit @submit="log">提交</Submit>
     </FormButtonGroup>
   </FormProvider>
@@ -83,8 +83,8 @@ import {
   FormButtonGroup,
   Submit,
   Input,
-} from 'arco-vue-formily'
-import { ElButton } from 'element-plus'
+} from 'arco-design-web-vue-formily'
+import { Button } from '@arco-design/web-vue'
 
 const { SchemaField, SchemaVoidField, SchemaStringField } = createSchemaField({
   components: {

@@ -22,23 +22,41 @@
   </FormProvider>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts">
 import { createForm } from '@formily/core'
 import { FormProvider, createSchemaField } from '@formily/vue'
-import { Submit, FormButtonGroup, FormItem, Input } from 'arco-vue-formily'
+import {
+  FormLayout,
+  Submit,
+  FormButtonGroup,
+  FormItem,
+  Input,
+} from 'arco-design-web-vue-formily'
 
-const { SchemaField, SchemaStringField } = createSchemaField({
-  components: { FormItem, Input },
-})
+const fields = createSchemaField({ components: { FormItem, Input } })
 
-const form = createForm()
-
-const handleSubmit = (values) => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      console.log(values)
-      resolve(void 0)
-    }, 2000)
-  })
+export default {
+  components: {
+    FormProvider,
+    Submit,
+    FormButtonGroup,
+    ...fields,
+  },
+  data() {
+    const form = createForm()
+    return {
+      form,
+    }
+  },
+  methods: {
+    handleSubmit(values) {
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          console.log(values)
+          resolve('success')
+        }, 2000)
+      })
+    },
+  },
 }
 </script>

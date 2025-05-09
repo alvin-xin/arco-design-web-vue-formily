@@ -16,4 +16,4 @@
 
 ## API
 
-参考 [https://element-plus.gitee.io/zh-CN/component/date-picker.html](https://element-plus.gitee.io/zh-CN/component/date-picker.html)
+参考 [https://antdv.com/components/date-picker-cn/](https://antdv.com/components/date-picker-cn/)

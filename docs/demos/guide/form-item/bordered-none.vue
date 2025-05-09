@@ -65,7 +65,7 @@
   </Form>
 </template>
 
-<script setup lang="ts">
+<script lang="ts">
 import { createForm } from '@formily/core'
 import { createSchemaField } from '@formily/vue'
 import {
@@ -77,19 +77,33 @@ import {
   DatePicker,
   Switch,
   InputNumber,
-} from 'arco-vue-formily'
+} from 'arco-design-web-vue-formily'
 
 const form = createForm()
-const { SchemaField, SchemaStringField, SchemaBooleanField } =
-  createSchemaField({
-    components: {
-      FormItem,
-      Input,
-      Select,
-      Cascader,
-      DatePicker,
-      Switch,
-      InputNumber,
+const fields = createSchemaField({
+  components: {
+    FormItem,
+    Input,
+    Select,
+    Cascader,
+    DatePicker,
+    Switch,
+    InputNumber,
+  },
+})
+
+export default {
+  // eslint-disable-next-line vue/no-reserved-component-names
+  components: { Form, ...fields },
+  data() {
+    return {
+      form,
+    }
+  },
+  methods: {
+    onSubmit(value) {
+      console.log(value)
     },
-  })
+  },
+}
 </script>

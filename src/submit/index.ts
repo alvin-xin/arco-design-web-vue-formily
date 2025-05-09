@@ -39,6 +39,7 @@ export const Submit = observer(
               if (onClick) {
                 if (onClick(e) === false) return
               }
+              
               if (onSubmit) {
                 form
                   ?.submit(onSubmit as (e: any) => void)

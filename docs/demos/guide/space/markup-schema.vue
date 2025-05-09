@@ -1,6 +1,6 @@
 <template>
   <FormProvider :form="form">
-    <FormLayout :labelCol="6" :wrapperCol="16">
+    <FormLayout :label-col="6" :wrapper-col="16">
       <SchemaField>
         <SchemaVoidField
           x-component="FormLayout"
@@ -73,42 +73,52 @@
             title="文本框"
             x-decorator="FormItem"
             :required="true"
-            x-component="Input"
+            x-component="Textarea"
             :x-component-props="{
               style: {
                 width: 400,
               },
-              type: 'textarea',
             }"
           />
         </SchemaVoidField>
       </SchemaField>
-      <FormButtonGroup alignFormItem>
-        <Submit @submit="log">提交</Submit>
+      <FormButtonGroup align-form-item>
+        <Submit :on-submit="log">提交</Submit>
       </FormButtonGroup>
     </FormLayout>
   </FormProvider>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts">
 import { createForm } from '@formily/core'
 import { createSchemaField, FormProvider } from '@formily/vue'
 import {
   FormLayout,
   FormItem,
   Input,
+  Textarea,
   Space,
   FormButtonGroup,
   Submit,
-} from 'arco-vue-formily'
+} from 'arco-design-web-vue-formily'
 
-const { SchemaField, SchemaVoidField, SchemaStringField } = createSchemaField({
-  components: { FormItem, FormLayout, Input, Space },
+const fields = createSchemaField({
+  components: { FormItem, FormLayout, Input, Textarea, Space },
 })
 
-const form = createForm()
+export default {
+  components: { FormProvider, FormLayout, FormButtonGroup, Submit, ...fields },
+  data() {
+    const form = createForm()
+    return {
+      form,
+    }
+  },
 
-const log = (value) => {
-  console.log(value)
+  methods: {
+    log(value) {
+      console.log(value)
+    },
+  },
 }
 </script>

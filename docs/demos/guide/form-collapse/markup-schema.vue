@@ -11,8 +11,8 @@
         <SchemaVoidField
           type="void"
           name="tab1"
-          x-component="FormCollapse.Item"
-          :x-component-props="{ title: 'A1' }"
+          x-component="FormCollapse.CollapsePanel"
+          :x-component-props="{ header: 'A1' }"
         >
           <SchemaStringField
             name="aaa"
@@ -24,8 +24,8 @@
         </SchemaVoidField>
         <SchemaVoidField
           name="tab2"
-          x-component="FormCollapse.Item"
-          :x-component-props="{ title: 'A2' }"
+          x-component="FormCollapse.CollapsePanel"
+          :x-component-props="{ header: 'A2' }"
         >
           <SchemaStringField
             name="bbb"
@@ -37,8 +37,8 @@
         </SchemaVoidField>
         <SchemaVoidField
           name="tab3"
-          x-component="FormCollapse.Item"
-          :x-component-props="{ title: 'A3' }"
+          x-component="FormCollapse.CollapsePanel"
+          :x-component-props="{ header: 'A3' }"
         >
           <SchemaStringField
             name="ccc"
@@ -50,8 +50,8 @@
         </SchemaVoidField>
       </SchemaVoidField>
     </SchemaField>
-    <FormButtonGroup alignFormItem>
-      <ElButton
+    <FormButtonGroup align-form-item>
+      <Button
         @click="
           () => {
             form.query('tab3').take((field) => {
@@ -61,8 +61,8 @@
         "
       >
         显示/隐藏最后一个Tab
-      </ElButton>
-      <ElButton
+      </Button>
+      <Button
         @click="
           () => {
             formCollapse.toggleActiveKey('tab2')
@@ -70,13 +70,14 @@
         "
       >
         切换第二个Tab
-      </ElButton>
+      </Button>
       <Submit @submit="log">提交</Submit>
     </FormButtonGroup>
   </Form>
 </template>
 
-<script setup lang="ts">
+<script lang="ts">
+/* eslint-disable vue/no-reserved-component-names */
 import { createForm } from '@formily/core'
 import { createSchemaField } from '@formily/vue'
 import {
@@ -86,10 +87,10 @@ import {
   Submit,
   Input,
   Form,
-} from 'arco-vue-formily'
-import { ElButton } from 'element-plus'
+} from 'arco-design-web-vue-formily'
+import { Button } from '@arco-design/web-vue'
 
-const { SchemaField, SchemaVoidField, SchemaStringField } = createSchemaField({
+const SchemaField = createSchemaField({
   components: {
     FormItem,
     FormCollapse,
@@ -97,11 +98,29 @@ const { SchemaField, SchemaVoidField, SchemaStringField } = createSchemaField({
   },
 })
 
-const form = createForm()
-const formCollapse = FormCollapse.createFormCollapse()
+export default {
+  components: {
+    Form,
+    FormButtonGroup,
+    Button,
+    Submit,
+    ...SchemaField,
+  },
 
-const log = (values) => {
-  console.log(values)
+  data() {
+    const form = createForm()
+    const formCollapse = FormCollapse.createFormCollapse()
+
+    return {
+      form,
+      formCollapse,
+    }
+  },
+  methods: {
+    log(values) {
+      console.log(values)
+    },
+  },
 }
 </script>
 

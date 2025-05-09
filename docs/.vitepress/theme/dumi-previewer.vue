@@ -105,6 +105,13 @@ const handleCopy = () => {
 // }
 </script>
 
+<script lang="js">
+import { defineComponent } from 'vue'
+export default defineComponent({
+  name: 'Previewer',
+})
+</script>
+
 <style lang="less">
 .dumi-previewer {
   background-color: #fff;

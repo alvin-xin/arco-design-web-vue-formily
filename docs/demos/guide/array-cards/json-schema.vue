@@ -5,12 +5,19 @@
   </FormProvider>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts">
 import { createForm } from '@formily/core'
 import { FormProvider, createSchemaField } from '@formily/vue'
-import { FormItem, Submit, Input, ArrayCards } from 'arco-vue-formily'
+import {
+  FormItem,
+  FormButtonGroup,
+  Submit,
+  Input,
+  ArrayCards,
+} from 'arco-design-web-vue-formily'
+import { Button } from '@arco-design/web-vue'
 
-const { SchemaField } = createSchemaField({
+const SchemaField = createSchemaField({
   components: {
     FormItem,
     Input,
@@ -18,104 +25,119 @@ const { SchemaField } = createSchemaField({
   },
 })
 
-const form = createForm()
+export default {
+  components: {
+    FormProvider,
+    Submit,
+    ...SchemaField,
+  },
 
-const schema = {
-  type: 'object',
-  properties: {
-    string_array: {
-      type: 'array',
-      'x-component': 'ArrayCards',
-      maxItems: 3,
-      'x-decorator': 'FormItem',
-      'x-component-props': {
-        title: '字符串数组',
-      },
-      items: {
-        type: 'void',
-        properties: {
-          index: {
-            type: 'void',
-            'x-component': 'ArrayCards.Index',
-          },
-          input: {
-            type: 'string',
-            'x-decorator': 'FormItem',
-            title: 'Input',
-            required: true,
-            'x-component': 'Input',
-          },
-          remove: {
-            type: 'void',
-            'x-component': 'ArrayCards.Remove',
-          },
-          moveUp: {
-            type: 'void',
-            'x-component': 'ArrayCards.MoveUp',
-          },
-          moveDown: {
-            type: 'void',
-            'x-component': 'ArrayCards.MoveDown',
-          },
-        },
-      },
+  data() {
+    const form = createForm()
+    const schema = {
+      type: 'object',
       properties: {
-        addition: {
-          type: 'void',
-          title: '添加条目',
-          'x-component': 'ArrayCards.Addition',
+        string_array: {
+          type: 'array',
+          'x-component': 'ArrayCards',
+          maxItems: 3,
+          'x-decorator': 'FormItem',
+          'x-component-props': {
+            title: '字符串数组',
+          },
+          items: {
+            type: 'void',
+            properties: {
+              index: {
+                type: 'void',
+                'x-component': 'ArrayCards.Index',
+              },
+              input: {
+                type: 'string',
+                'x-decorator': 'FormItem',
+                title: 'Input',
+                required: true,
+                'x-component': 'Input',
+              },
+              remove: {
+                type: 'void',
+                'x-component': 'ArrayCards.Remove',
+              },
+              moveUp: {
+                type: 'void',
+                'x-component': 'ArrayCards.MoveUp',
+              },
+              moveDown: {
+                type: 'void',
+                'x-component': 'ArrayCards.MoveDown',
+              },
+            },
+          },
+          properties: {
+            addition: {
+              type: 'void',
+              title: '添加条目',
+              'x-component': 'ArrayCards.Addition',
+            },
+          },
+        },
+        array: {
+          type: 'array',
+          'x-component': 'ArrayCards',
+          maxItems: 3,
+          'x-decorator': 'FormItem',
+          'x-component-props': {
+            title: '对象数组',
+          },
+          items: {
+            type: 'object',
+            properties: {
+              index: {
+                type: 'void',
+                'x-component': 'ArrayCards.Index',
+              },
+              input: {
+                type: 'string',
+                'x-decorator': 'FormItem',
+                title: 'Input',
+                required: true,
+                'x-component': 'Input',
+              },
+              remove: {
+                type: 'void',
+                'x-component': 'ArrayCards.Remove',
+              },
+              moveUp: {
+                type: 'void',
+                'x-component': 'ArrayCards.MoveUp',
+              },
+              moveDown: {
+                type: 'void',
+                'x-component': 'ArrayCards.MoveDown',
+              },
+            },
+          },
+          properties: {
+            addition: {
+              type: 'void',
+              title: '添加条目',
+              'x-component': 'ArrayCards.Addition',
+            },
+          },
         },
       },
-    },
-    array: {
-      type: 'array',
-      'x-component': 'ArrayCards',
-      maxItems: 3,
-      'x-decorator': 'FormItem',
-      'x-component-props': {
-        title: '对象数组',
-      },
-      items: {
-        type: 'object',
-        properties: {
-          index: {
-            type: 'void',
-            'x-component': 'ArrayCards.Index',
-          },
-          input: {
-            type: 'string',
-            'x-decorator': 'FormItem',
-            title: 'Input',
-            required: true,
-            'x-component': 'Input',
-          },
-          remove: {
-            type: 'void',
-            'x-component': 'ArrayCards.Remove',
-          },
-          moveUp: {
-            type: 'void',
-            'x-component': 'ArrayCards.MoveUp',
-          },
-          moveDown: {
-            type: 'void',
-            'x-component': 'ArrayCards.MoveDown',
-          },
-        },
-      },
-      properties: {
-        addition: {
-          type: 'void',
-          title: '添加条目',
-          'x-component': 'ArrayCards.Addition',
-        },
-      },
+    }
+
+    return {
+      form,
+      schema,
+    }
+  },
+  methods: {
+    log(values) {
+      console.log(values)
     },
   },
-}
-
-const log = (values) => {
-  console.log(values)
 }
 </script>
 

@@ -4,16 +4,10 @@
   </FormProvider>
 </template>
 
-<script setup lang="ts">
+<script lang="ts">
 import { createForm } from '@formily/core'
 import { createSchemaField, FormProvider } from '@formily/vue'
-import {
-  FormItem,
-  FormLayout,
-  Input,
-  Select,
-  Submit,
-} from 'arco-vue-formily'
+import { FormItem, FormLayout, Input, Select, Submit } from 'arco-design-web-vue-formily'
 
 const schema = {
   type: 'object',
@@ -24,7 +18,6 @@ const schema = {
       'x-component-props': {
         labelCol: 6,
         wrapperCol: 10,
-        layout: 'vertical',
       },
       properties: {
         input: {
@@ -50,7 +43,7 @@ const schema = {
 }
 
 const form = createForm()
-const { SchemaField } = createSchemaField({
+const fields = createSchemaField({
   components: {
     FormLayout,
     FormItem,
@@ -58,4 +51,19 @@ const { SchemaField } = createSchemaField({
     Select,
   },
 })
+
+export default {
+  components: { FormProvider, ...fields },
+  data() {
+    return {
+      form,
+      schema,
+    }
+  },
+  methods: {
+    onSubmit(value) {
+      console.log(value)
+    },
+  },
+}
 </script>

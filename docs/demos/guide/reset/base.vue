@@ -23,17 +23,36 @@
   </FormProvider>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts">
 import { createForm } from '@formily/core'
 import { FormProvider, createSchemaField } from '@formily/vue'
-import { Reset, FormButtonGroup, FormItem, Input } from 'arco-vue-formily'
+import {
+  FormLayout,
+  Reset,
+  FormButtonGroup,
+  FormItem,
+  Input,
+} from 'arco-design-web-vue-formily'
 
-const { SchemaField, SchemaStringField } = createSchemaField({
+const fields = createSchemaField({
   components: {
     FormItem,
     Input,
   },
 })
 
-const form = createForm()
+export default {
+  components: {
+    FormProvider,
+    Reset,
+    FormButtonGroup,
+    ...fields,
+  },
+  data() {
+    const form = createForm()
+    return {
+      form,
+    }
+  },
+}
 </script>

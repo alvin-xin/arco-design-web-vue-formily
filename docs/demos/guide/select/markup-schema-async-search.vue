@@ -7,8 +7,7 @@
         x-decorator="FormItem"
         x-component="Select"
         :x-component-props="{
-          filterable: true,
-          remote: true,
+          showSearch: true,
           style: {
             width: '240px',
           },
@@ -19,11 +18,12 @@
   </FormProvider>
 </template>
 
-<script lang="ts" setup>
-import { createForm, onFieldInit, onFieldReact, DataField } from '@formily/core'
+<script lang="ts">
+import type { Field } from '@formily/core'
+import { createForm, onFieldInit, onFieldReact } from '@formily/core'
 import { action, observable } from '@formily/reactive'
 import { createSchemaField, FormProvider } from '@formily/vue'
-import { FormItem, Select, Submit } from 'arco-vue-formily'
+import { FormItem, Select, Submit } from 'arco-design-web-vue-formily'
 
 let timeout
 let currentValue
@@ -56,13 +56,15 @@ const useAsyncDataSource = (pattern, service) => {
 
   onFieldInit(pattern, (field) => {
     field.setComponentProps({
-      remoteMethod: (value) => {
-        keyword.value = value
+      onSearch: (value) => {
+        if (value) {
+          keyword.value = value
+        }
       },
     })
   })
 
-  onFieldReact(pattern, (field: DataField) => {
+  onFieldReact(pattern, (field: Field) => {
     field.loading = true
     service({ field, keyword: keyword.value }).then(
       action.bound((data) => {
@@ -85,14 +87,24 @@ const form = createForm({
     })
   },
 })
-const { SchemaField, SchemaStringField } = createSchemaField({
+const fields = createSchemaField({
   components: {
     FormItem,
     Select,
   },
 })
 
-const log = (value) => {
-  console.log(value)
+export default {
+  components: { FormProvider, ...fields, Submit },
+  data() {
+    return {
+      form,
+    }
+  },
+  methods: {
+    log(value) {
+      console.log(value)
+    },
+  },
 }
 </script>

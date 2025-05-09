@@ -86,18 +86,19 @@ const FormTabInner = observer(
             address: `${field.address.concat(key)}.*`,
           })
           if (errors.length) {
-            return () =>
-              h(
-                Badge,
-                {
-                  class: [`${prefixCls}-errors-badge`],
-                  count: errors.length,
-                  size: 'small',
-                },
-                { default: () => props.tab }
-              )
+            return () => h(
+              Badge,
+              {
+                class: [`${prefixCls}-errors-badge`],
+                count: errors.length,
+                size: 'mini',
+                dot: true
+              },
+              { default: () => props.tab }
+            )
+              
           }
-          return props.tab
+          return () => props.tab
         }
 
         const getTabs = (tabs: any) => {
@@ -107,7 +108,7 @@ const FormTabInner = observer(
               {
                 ...props,
                 key: name,
-                tab: badgedTab(name, props),
+                // title: name, // badgedTab(name, props),
               },
               {
                 default: () => [
@@ -120,6 +121,7 @@ const FormTabInner = observer(
                     {}
                   ),
                 ],
+                title: badgedTab(name, props)
               }
             )
           })

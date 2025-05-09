@@ -5,10 +5,10 @@
   </Form>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts">
 import { createForm } from '@formily/core'
 import { createSchemaField } from '@formily/vue'
-import { Form, FormItem, TimePicker, Submit } from 'arco-vue-formily'
+import { Form, FormItem, TimePicker, Submit } from 'arco-design-web-vue-formily'
 
 const schema = {
   type: 'object',
@@ -24,18 +24,6 @@ const schema = {
         },
       },
     },
-    '[startTime,endTime]': {
-      title: '时间范围',
-      'x-decorator': 'FormItem',
-      'x-component': 'TimePicker',
-      'x-component-props': {
-        isRange: true,
-        style: {
-          width: '240px',
-        },
-      },
-      type: 'string',
-    },
   },
 }
 
@@ -47,7 +35,20 @@ const { SchemaField } = createSchemaField({
   },
 })
 
-const onSubmit = (value) => {
-  console.log(value)
+export default {
+  // eslint-disable-next-line vue/no-reserved-component-names
+  components: { Form, SchemaField, Submit },
+  data() {
+    return {
+      form,
+      schema,
+    }
+  },
+  methods: {
+    onSubmit(value) {
+      console.log(value)
+    },
+  },
 }
 </script>
+l

@@ -4,7 +4,7 @@
     <FormConsumer>
       <template #default>
         <FormButtonGroup>
-          <ElButton
+          <Button
             :disabled="!formStep.allowBack"
             @click="
               () => {
@@ -13,8 +13,8 @@
             "
           >
             上一步
-          </ElButton>
-          <ElButton
+          </Button>
+          <Button
             :disabled="!formStep.allowNext"
             @click="
               () => {
@@ -23,7 +23,7 @@
             "
           >
             下一步
-          </ElButton>
+          </Button>
           <Submit :disabled="formStep.allowNext" @submit="log">提交</Submit>
         </FormButtonGroup>
       </template>
@@ -31,7 +31,7 @@
   </FormProvider>
 </template>
 
-<script setup lang="ts">
+<script lang="ts">
 import { createForm } from '@formily/core'
 import { FormProvider, createSchemaField, FormConsumer } from '@formily/vue'
 import {
@@ -40,8 +40,8 @@ import {
   FormButtonGroup,
   Submit,
   Input,
-} from 'arco-vue-formily'
-import { ElButton } from 'element-plus'
+} from 'arco-design-web-vue-formily'
+import { Button } from '@arco-design/web-vue'
 
 const { SchemaField } = createSchemaField({
   components: {
@@ -86,7 +86,7 @@ const schema = {
           properties: {
             bbb: {
               type: 'string',
-              title: 'BBB',
+              title: 'AAA',
               required: true,
               'x-decorator': 'FormItem',
               'x-component': 'Input',
@@ -102,7 +102,7 @@ const schema = {
           properties: {
             ccc: {
               type: 'string',
-              title: 'CCC',
+              title: 'AAA',
               required: true,
               'x-decorator': 'FormItem',
               'x-component': 'Input',
@@ -113,11 +113,32 @@ const schema = {
     },
   },
 }
-const form = createForm()
-const formStep = FormStep.createFormStep()
 
-const log = () => {
-  formStep.submit(console.log)
+export default {
+  components: {
+    FormProvider,
+    FormConsumer,
+    FormButtonGroup,
+    // eslint-disable-next-line vue/no-reserved-component-names
+    Button,
+    Submit,
+    SchemaField,
+  },
+
+  data() {
+    const form = createForm()
+    const formStep = FormStep.createFormStep()
+    return {
+      schema,
+      form,
+      formStep,
+    }
+  },
+  methods: {
+    log() {
+      this.formStep.submit(console.log)
+    },
+  },
 }
 </script>
 

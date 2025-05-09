@@ -13,37 +13,35 @@
           },
         }"
       />
-      <SchemaStringField
-        name="[startTime, endTime]"
-        title="时间范围"
-        x-decorator="FormItem"
-        x-component="TimePicker"
-        :x-component-props="{
-          isRange: true,
-          style: {
-            width: '240px',
-          },
-        }"
-      />
     </SchemaField>
     <Submit @submit="log">提交</Submit>
   </FormProvider>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts">
 import { createForm } from '@formily/core'
 import { createSchemaField, FormProvider } from '@formily/vue'
-import { FormItem, TimePicker, Submit } from 'arco-vue-formily'
+import { FormItem, TimePicker, Submit } from 'arco-design-web-vue-formily'
 
 const form = createForm()
-const { SchemaField, SchemaStringField } = createSchemaField({
+const fields = createSchemaField({
   components: {
     FormItem,
     TimePicker,
   },
 })
 
-const log = (value) => {
-  console.log(value)
+export default {
+  components: { FormProvider, ...fields, Submit },
+  data() {
+    return {
+      form,
+    }
+  },
+  methods: {
+    log(value) {
+      console.log(value)
+    },
+  },
 }
 </script>

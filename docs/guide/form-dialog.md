@@ -26,7 +26,7 @@
 ### FormDialog
 
 ```ts pure
-import { IFormProps, Form } from '@formily/core'
+import type { IFormProps, Form } from '@formily/core'
 
 type FormDialogContentProps = { form: Form }
 
@@ -66,7 +66,7 @@ interface FormDialog {
 }
 ```
 
-`DialogProps`类型定义参考 [Element-Plus Dialog API](https://element-plus.gitee.io/zh-CN/component/dialog.html#dialog-属性)
+`DialogProps`类型定义参考 [Element-UI Dialog API](https://element.eleme.io/#/zh-CN/component/dialog#attributes)
 
 ### FormDialog.Footer
 

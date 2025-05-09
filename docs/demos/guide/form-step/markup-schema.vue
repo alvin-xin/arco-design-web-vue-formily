@@ -8,6 +8,7 @@
         >
           <SchemaStringField
             name="aaa"
+            title="AAA"
             x-decorator="FormItem"
             required
             x-component="Input"
@@ -19,6 +20,7 @@
         >
           <SchemaStringField
             name="bbb"
+            title="AAA"
             x-decorator="FormItem"
             required
             x-component="Input"
@@ -31,6 +33,7 @@
         >
           <SchemaStringField
             name="ccc"
+            title="AAA"
             x-decorator="FormItem"
             required
             x-component="Input"
@@ -41,7 +44,7 @@
     <FormConsumer>
       <template #default>
         <FormButtonGroup>
-          <ElButton
+          <Button
             :disabled="!formStep.allowBack"
             @click="
               () => {
@@ -50,8 +53,8 @@
             "
           >
             上一步
-          </ElButton>
-          <ElButton
+          </Button>
+          <Button
             :disabled="!formStep.allowNext"
             @click="
               () => {
@@ -60,7 +63,7 @@
             "
           >
             下一步
-          </ElButton>
+          </Button>
           <Submit :disabled="formStep.allowNext" @submit="log">提交</Submit>
         </FormButtonGroup>
       </template>
@@ -69,6 +72,7 @@
 </template>
 
 <script setup lang="ts">
+/* eslint-disable vue/no-reserved-component-names */
 import { createForm } from '@formily/core'
 import { FormProvider, FormConsumer, createSchemaField } from '@formily/vue'
 import {
@@ -77,8 +81,8 @@ import {
   FormButtonGroup,
   Submit,
   Input,
-} from 'arco-vue-formily'
-import { ElButton } from 'element-plus'
+} from 'arco-design-web-vue-formily'
+import { Button } from '@arco-design/web-vue'
 
 const { SchemaField, SchemaVoidField, SchemaStringField } = createSchemaField({
   components: {
@@ -87,8 +91,9 @@ const { SchemaField, SchemaVoidField, SchemaStringField } = createSchemaField({
     Input,
   },
 })
-const formStep = FormStep.createFormStep()
+
 const form = createForm()
+const formStep = FormStep.createFormStep()
 
 const log = () => {
   formStep.submit(console.log)

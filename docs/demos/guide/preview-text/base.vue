@@ -1,5 +1,5 @@
 <template>
-  <FormLayout :labelCol="6" :wrapperCol="10">
+  <FormLayout :label-col="6" :wrapper-col="10">
     <FormProvider :form="form">
       <SchemaField>
         <SchemaStringField
@@ -51,21 +51,34 @@
   </FormLayout>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts">
 import { createForm } from '@formily/core'
 import { FormProvider, createSchemaField } from '@formily/vue'
-import { FormLayout, FormItem, PreviewText } from 'arco-vue-formily'
+import { FormLayout, FormItem, PreviewText } from 'arco-design-web-vue-formily'
 
-const { SchemaField, SchemaStringField } = createSchemaField({
+const fields = createSchemaField({
   components: {
     FormItem,
     PreviewText,
   },
 })
 
-const form = createForm()
-
-const log = (v) => {
-  console.log(v)
+export default {
+  components: {
+    FormProvider,
+    FormLayout,
+    ...fields,
+  },
+  data() {
+    const form = createForm()
+    return {
+      form,
+    }
+  },
+  methods: {
+    log(v) {
+      console.log(v)
+    },
+  },
 }
 </script>

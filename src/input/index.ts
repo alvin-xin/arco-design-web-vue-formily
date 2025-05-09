@@ -1,5 +1,5 @@
 import { connect, mapProps, mapReadPretty } from "@formily/vue";
-import { Input as ArcoInput, InputInstance as ArcoInputInstance } from "@arco-design/web-vue";
+import { Input as ArcoInput, InputInstance as ArcoInputInstance, Textarea as ArcoTextarea } from "@arco-design/web-vue";
 import { composeExport, transformComponent } from "../__builtins__";
 import { PreviewText } from "../preview-text";
 
@@ -30,6 +30,15 @@ const InnerInput = connect(
   mapReadPretty(PreviewText.Input)
 )
 
-export const Input = composeExport(InnerInput, {})
+
+// const Textarea = connect(
+//   transformComponent(ArcoTextarea, { change: 'update:modelValue' }),
+//   mapProps({ value:'modelValue', readOnly:'read-only' }),
+//   // mapReadPretty(PreviewText.Textarea)
+// )
+
+export const Input = composeExport(InnerInput, {
+  // Textarea
+})
 
 export default Input

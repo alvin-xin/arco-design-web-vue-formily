@@ -9,29 +9,23 @@
       />
       <SchemaStringField
         name="week"
-        title="周"
+        title="周选择"
         x-decorator="FormItem"
-        x-component="DatePicker"
-        :x-component-props="{
-          type: 'week',
-        }"
+        x-component="WeekPicker"
       />
       <SchemaStringField
         name="month"
-        title="月"
+        title="月选择"
         x-decorator="FormItem"
-        x-component="DatePicker"
-        :x-component-props="{
-          type: 'month',
-        }"
+        x-component="MonthPicker"
       />
       <SchemaStringField
         name="year"
-        title="年"
+        title="年选择"
         x-decorator="FormItem"
         x-component="DatePicker"
         :x-component-props="{
-          type: 'year',
+          picker: 'year',
         }"
       />
       <SchemaStringField
@@ -40,43 +34,16 @@
         x-decorator="FormItem"
         x-component="DatePicker"
         :x-component-props="{
-          type: 'datetime',
+          showTime: true,
         }"
       />
       <SchemaArrayField
-        name="dates"
-        title="多个日期"
-        x-decorator="FormItem"
-        x-component="DatePicker"
-        :x-component-props="{
-          type: 'dates',
-        }"
-      />
-      <SchemaArrayField
-        name="dateRange"
+        name="[startDate,endDate]"
         title="日期范围"
         x-decorator="FormItem"
-        x-component="DatePicker"
+        x-component="RangePicker"
         :x-component-props="{
-          type: 'daterange',
-        }"
-      />
-      <SchemaArrayField
-        name="monthRange"
-        title="月范围"
-        x-decorator="FormItem"
-        x-component="DatePicker"
-        :x-component-props="{
-          type: 'monthrange',
-        }"
-      />
-      <SchemaArrayField
-        name="dateTimeRange"
-        title="日期时间范围"
-        x-decorator="FormItem"
-        x-component="DatePicker"
-        :x-component-props="{
-          type: 'datetimerange',
+          showTime: true,
         }"
       />
     </SchemaField>
@@ -84,20 +51,32 @@
   </Form>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts">
 import { createForm } from '@formily/core'
 import { createSchemaField } from '@formily/vue'
-import { Form, FormItem, DatePicker, Submit } from 'arco-vue-formily'
+import { Form, FormItem, DatePicker, WeekPicker, MonthPicker, YearPicker, RangePicker, Submit } from 'arco-design-web-vue-formily'
 
 const form = createForm()
-const { SchemaField, SchemaStringField, SchemaArrayField } = createSchemaField({
+const fields = createSchemaField({
   components: {
     FormItem,
     DatePicker,
+    WeekPicker, MonthPicker, YearPicker, RangePicker, 
   },
 })
 
-const onSubmit = (value) => {
-  console.log(value)
+export default {
+  // eslint-disable-next-line vue/no-reserved-component-names
+  components: { Form, ...fields, Submit },
+  data() {
+    return {
+      form,
+    }
+  },
+  methods: {
+    onSubmit(value) {
+      console.log(value)
+    },
+  },
 }
 </script>

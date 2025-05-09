@@ -1,11 +1,12 @@
 <template>
-  <ElButton @click="handleOpen">点击打开表单</ElButton>
+  <Button @click="handleOpen">点击打开表单</Button>
 </template>
 
-<script setup lang="tsx">
-import { FormDialog, FormLayout, FormItem, Input } from 'arco-vue-formily'
-import { ElButton } from 'element-plus'
+<script lang="tsx">
+import { FormDialog, FormLayout, FormItem, Input } from 'arco-design-web-vue-formily'
+import { Button } from '@arco-design/web-vue'
 import { createSchemaField } from '@formily/vue'
+import { VNode } from 'vue'
 const { SchemaField } = createSchemaField({
   components: {
     FormItem,
@@ -53,7 +54,7 @@ const DialogForm = {
       schema,
     }
   },
-  render(h) {
+  render() {
     return (
       <FormLayout labelCol={6} wrapperCol={10}>
         <SchemaField schema={this.schema} />
@@ -65,31 +66,40 @@ const DialogForm = {
   },
 }
 
-const handleOpen = () => {
-  FormDialog('弹框表单', DialogForm)
-    .forOpen((payload, next) => {
-      setTimeout(() => {
-        next({
-          initialValues: {
-            aaa: '123',
-          },
+export default {
+  // eslint-disable-next-line vue/no-reserved-component-names
+  components: { Button },
+  data() {
+    return {}
+  },
+  methods: {
+    handleOpen() {
+      FormDialog('弹框表单', DialogForm as any)
+        .forOpen((payload, next) => {
+          setTimeout(() => {
+            next({
+              initialValues: {
+                aaa: '123',
+              },
+            })
+          }, 1000)
         })
-      }, 1000)
-    })
-    .forConfirm((payload, next) => {
-      setTimeout(() => {
-        console.log(payload)
-        next(payload)
-      }, 1000)
-    })
-    .forCancel((payload, next) => {
-      setTimeout(() => {
-        console.log(payload)
-        next(payload)
-      }, 1000)
-    })
-    .open()
-    .then(console.log)
-    .catch(console.error)
+        .forConfirm((payload, next) => {
+          setTimeout(() => {
+            console.log(payload)
+            next(payload)
+          }, 1000)
+        })
+        .forCancel((payload, next) => {
+          setTimeout(() => {
+            console.log(payload)
+            next(payload)
+          }, 1000)
+        })
+        .open()
+        .then(console.log)
+        .catch(console.error)
+    },
+  },
 }
 </script>

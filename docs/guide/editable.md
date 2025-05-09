@@ -22,10 +22,10 @@
 
 > 内联编辑
 
-参考 [/guide/form-item.html#api](/guide/form-item.html#api)
+参考 [https://antdv.com/components/form-cn/#Form.Item](https://antdv.com/components/form-cn/#Form.Item)
 
 ### Editable.Popover
 
 > 浮层编辑
 
-参考 [https://element-plus.gitee.io/zh-CN/component/popover.html](https://element-plus.gitee.io/zh-CN/component/popover.html)
+参考 [https://antdv.com/components/popover-cn/](https://antdv.com/components/popover-cn/)

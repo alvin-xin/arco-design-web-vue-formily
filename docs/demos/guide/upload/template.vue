@@ -4,81 +4,124 @@
       name="upload"
       title="上传"
       :decorator="[FormItem]"
-      :component="[
-        Upload,
-        {
-          action: 'https://formily-vue.free.beeceptor.com/file',
-          textContent: '上传',
-        },
-      ]"
+      :component="[NormalUpload]"
       required
     />
     <ArrayField
       name="upload2"
       title="卡片上传"
       :decorator="[FormItem]"
-      :component="[
-        Upload,
-        {
-          listType: 'picture-card',
-          action: 'https://formily-vue.free.beeceptor.com/file',
-        },
-      ]"
+      :component="[CardUpload]"
       required
     />
     <ArrayField
       name="upload3"
       title="拖拽上传"
       :decorator="[FormItem]"
-      :component="[
-        Upload,
-        {
-          action: 'https://formily-vue.free.beeceptor.com/file',
-          textContent: '将文件拖到此处，或者点击上传',
-          drag: true,
-        },
-      ]"
+      :component="[DraggerUpload]"
       required
     />
-    <ArrayField
-      name="custom"
-      title="自定义按钮"
-      :decorator="[FormItem]"
-      :component="[
-        Upload,
-        {
-          action: 'https://formily-vue.free.beeceptor.com/file',
-        },
-      ]"
-      required
-      ><UploadButton
-    /></ArrayField>
     <FormButtonGroup align-form-item>
       <Submit @submit="onSubmit">提交</Submit>
     </FormButtonGroup>
   </Form>
 </template>
 
-<script lang="ts" setup>
-import { h } from 'vue'
+<script lang="tsx">
 import { createForm } from '@formily/core'
 import { ArrayField } from '@formily/vue'
+import { defineComponent, h } from 'vue'
 import {
   Form,
   FormItem,
   Upload,
   Submit,
   FormButtonGroup,
-} from 'arco-vue-formily'
-import { ElButton } from 'element-plus'
+} from 'arco-design-web-vue-formily'
+import { Button } from '@arco-design/web-vue'
+import { IconUpload, IconStorage } from '@arco-design/web-vue/es/icon'
 
-const UploadButton = () => {
-  return h(ElButton, {}, { default: () => '上传图片' })
-}
+const UploadButton = defineComponent({
+  setup() {
+    return () => h(Button, {}, { default: () => '上传图片' })
+  }
+})
+
+const NormalUpload = defineComponent({
+  inheritAttrs: false,
+  setup(props, { attrs }) {
+    return () => h(Upload, {
+      ...props,
+      ...attrs,
+      action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
+      headers: {
+        authorization: 'authorization-text'
+      }
+    }, {
+      default: () => h(Button, {}, {
+        default: () => [
+          h(IconUpload),
+          '上传文件'
+        ]
+      })
+    })
+  }
+})
+
+const CardUpload = defineComponent({
+  inheritAttrs: false,
+  setup(props, { attrs }) {
+    return () => h(Upload, {
+      ...props,
+      ...attrs,
+      action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
+      listType: 'picture-card',
+      headers: {
+        authorization: 'authorization-text'
+      }
+    }, {
+      default: () => h(IconUpload, { style: { fontSize: '20px' } })
+    })
+  }
+})
+
+const DraggerUpload = defineComponent({
+  inheritAttrs: false,
+  setup(props, { attrs }) {
+    return () => h('div', {}, [
+      h(Upload.Dragger, {
+        ...props,
+        ...attrs,
+        action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76'
+      }, {
+        default: () => [
+          h('p', { class: 'ant-upload-drag-icon' }, [h(IconStorage)]),
+          h('p', { class: 'ant-upload-text' }, 'Click or drag file to this area to upload'),
+          h('p', { class: 'ant-upload-hint' }, 'Support for a single or bulk upload. Strictly prohibit from uploading company data or other band files')
+        ]
+      })
+    ])
+  }
+})
 
 const form = createForm()
 
-const onSubmit = (value) => {
-  console.log(value)
+export default {
+  // eslint-disable-next-line vue/no-reserved-component-names
+  components: { Form, ArrayField, Submit, FormButtonGroup },
+  data() {
+    return {
+      NormalUpload,
+      CardUpload,
+      DraggerUpload,
+      FormItem,
+      form,
+    }
+  },
+  methods: {
+    onSubmit(value) {
+      console.log(value)
+    },
+  },
 }
 </script>

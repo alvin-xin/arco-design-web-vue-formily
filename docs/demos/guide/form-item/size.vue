@@ -94,8 +94,10 @@
   </Form>
 </template>
 
-<script setup lang="tsx">
-import { createForm, DataField, onFieldChange } from '@formily/core'
+<script lang="tsx">
+import { defineComponent, h } from 'vue'
+import type { Field } from '@formily/core'
+import { createForm, onFieldChange } from '@formily/core'
 import { createSchemaField } from '@formily/vue'
 import {
   Form,
@@ -107,38 +109,57 @@ import {
   Switch,
   InputNumber,
   Radio,
-} from 'arco-vue-formily'
+} from 'arco-design-web-vue-formily'
 
-const Div = (props, { slots }) => {
-  return <div {...props}>{slots?.default()}</div>
-}
+const Div = defineComponent({
+  inheritAttrs: false,
+  setup(props, { slots, attrs }) {
+    return () => {
+      return h('div', { ...props, ...attrs }, slots?.default)
+    }
+  },
+}) 
 
 const form = createForm({
   values: {
     size: 'default',
   },
   effects: () => {
-    onFieldChange('size', ['value'], (field, form) => {
+    onFieldChange('size', ['value'], (field: Field, form) => {
       form.setFieldState('sizeWrap.*', (state) => {
         if (state.decorator[1]) {
-          state.decorator[1].size = (field as DataField).value
+          state.decorator[1].size = field.value
         }
       })
     })
   },
 })
-const { SchemaField, SchemaStringField, SchemaVoidField, SchemaBooleanField } =
-  createSchemaField({
-    components: {
-      FormItem,
-      Input,
-      Select,
-      Cascader,
-      DatePicker,
-      Switch,
-      InputNumber,
-      Radio,
-      Div,
+const fields = createSchemaField({
+  components: {
+    FormItem,
+    Input,
+    Select,
+    Cascader,
+    DatePicker,
+    Switch,
+    InputNumber,
+    Radio,
+    Div,
+  },
+})
+
+export default {
+  // eslint-disable-next-line vue/no-reserved-component-names
+  components: { Form, ...fields },
+  data() {
+    return {
+      form,
+    }
+  },
+  methods: {
+    onSubmit(value) {
+      console.log(value)
     },
-  })
+  },
+}
 </script>

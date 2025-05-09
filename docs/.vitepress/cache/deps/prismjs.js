@@ -1,6 +1,6 @@
 import {
   __commonJS
-} from "./chunk-PLDDJCW6.js";
+} from "./chunk-PR4QN5HX.js";
 
 // node_modules/prismjs/prism.js
 var require_prism = __commonJS({
@@ -952,10 +952,7 @@ var require_prism = __commonJS({
                   pattern: /^=/,
                   alias: "attr-equals"
                 },
-                {
-                  pattern: /^(\s*)["']|["']$/,
-                  lookbehind: true
-                }
+                /"|'/
               ]
             }
           },
@@ -1080,7 +1077,7 @@ var require_prism = __commonJS({
       Prism2.languages.css = {
         "comment": /\/\*[\s\S]*?\*\//,
         "atrule": {
-          pattern: RegExp("@[\\w-](?:" + /[^;{\s"']|\s+(?!\s)/.source + "|" + string.source + ")*?" + /(?:;|(?=\s*\{))/.source),
+          pattern: /@[\w-](?:[^;{\s]|\s+(?![\s{]))*(?:;|(?=\s*\{))/,
           inside: {
             "rule": /^@[\w-]+/,
             "selector-function-argument": {
@@ -1202,17 +1199,8 @@ var require_prism = __commonJS({
     Prism.languages.javascript["class-name"][0].pattern = /(\b(?:class|extends|implements|instanceof|interface|new)\s+)[\w.\\]+/;
     Prism.languages.insertBefore("javascript", "keyword", {
       "regex": {
-        pattern: RegExp(
-          // lookbehind
-          // eslint-disable-next-line regexp/no-dupe-characters-character-class
-          /((?:^|[^$\w\xA0-\uFFFF."'\])\s]|\b(?:return|yield))\s*)/.source + // Regex pattern:
-          // There are 2 regex patterns here. The RegExp set notation proposal added support for nested character
-          // classes if the `v` flag is present. Unfortunately, nested CCs are both context-free and incompatible
-          // with the only syntax, so we have to define 2 different regex patterns.
-          /\//.source + "(?:" + /(?:\[(?:[^\]\\\r\n]|\\.)*\]|\\.|[^/\\\[\r\n])+\/[dgimyus]{0,7}/.source + "|" + // `v` flag syntax. This supports 3 levels of nested character classes.
-          /(?:\[(?:[^[\]\\\r\n]|\\.|\[(?:[^[\]\\\r\n]|\\.|\[(?:[^[\]\\\r\n]|\\.)*\])*\])*\]|\\.|[^/\\\[\r\n])+\/[dgimyus]{0,7}v[dgimyus]{0,7}/.source + ")" + // lookahead
-          /(?=(?:\s|\/\*(?:[^*]|\*(?!\/))*\*\/)*(?:$|[\r\n,.;:})\]]|\/\/))/.source
-        ),
+        // eslint-disable-next-line regexp/no-dupe-characters-character-class
+        pattern: /((?:^|[^$\w\xA0-\uFFFF."'\])\s]|\b(?:return|yield))\s*)\/(?:\[(?:[^\]\\\r\n]|\\.)*\]|\\.|[^/\\\[\r\n])+\/[dgimyus]{0,7}(?=(?:\s|\/\*(?:[^*]|\*(?!\/))*\*\/)*(?:$|[\r\n,.;:})\]]|\/\/))/,
         lookbehind: true,
         greedy: true,
         inside: {

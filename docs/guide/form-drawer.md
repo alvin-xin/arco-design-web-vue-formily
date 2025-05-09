@@ -19,7 +19,8 @@
 ### FormDrawer
 
 ```ts pure
-import { IFormProps, Form } from '@formily/core'
+import type { Form } from '@formily/core'
+import { IFormProps } from '@formily/core'
 
 type FormDrawerContentProps = { form: Form }
 
@@ -51,7 +52,7 @@ interface FormDrawer {
 }
 ```
 
-`DrawerProps`类型定义参考 [Element-Plus Drawer API](https://element-plus.gitee.io/zh-CN/component/drawer.html#drawer-属性)
+`DrawerProps`类型定义参考 [Element-UI Drawer API](https://element.eleme.io/#/zh-CN/component/drawer#attributes)
 
 ### FormDrawer.Footer
 

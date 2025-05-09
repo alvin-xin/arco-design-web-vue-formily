@@ -12,7 +12,7 @@
           },
         },
       ]"
-      :dataSource="[
+      :data-source="[
         { label: '发请求1', value: 1 },
         { label: '发请求2', value: 2 },
       ]"
@@ -34,14 +34,15 @@
   </Form>
 </template>
 
-<script lang="ts" setup>
-import { createForm, onFieldReact, DataField } from '@formily/core'
+<script lang="ts">
+import type { Field as InternalField } from '@formily/core'
+import { createForm, onFieldReact } from '@formily/core'
 import { Field } from '@formily/vue'
 import { action } from '@formily/reactive'
-import { Form, FormItem, Select, Submit, Reset } from 'arco-vue-formily'
+import { Form, FormItem, Select, Submit, Reset } from 'arco-design-web-vue-formily'
 
 const useAsyncDataSource = (pattern, service) => {
-  onFieldReact(pattern, (field: DataField) => {
+  onFieldReact(pattern, (field: InternalField) => {
     field.loading = true
     service(field).then(
       action.bound((data) => {
@@ -89,7 +90,20 @@ const form = createForm({
   },
 })
 
-const onSubmit = (value) => {
-  console.log(value)
+export default {
+  // eslint-disable-next-line vue/no-reserved-component-names
+  components: { Form, Field, Submit },
+  data() {
+    return {
+      form,
+      FormItem,
+      Select,
+    }
+  },
+  methods: {
+    onSubmit(value) {
+      console.log(value)
+    },
+  },
 }
 </script>

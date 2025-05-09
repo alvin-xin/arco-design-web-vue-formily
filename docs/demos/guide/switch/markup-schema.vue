@@ -12,20 +12,30 @@
   </FormProvider>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts">
 import { createForm } from '@formily/core'
 import { createSchemaField, FormProvider } from '@formily/vue'
-import { FormItem, Switch, Submit } from 'arco-vue-formily'
+import { FormItem, Switch, Submit } from 'arco-design-web-vue-formily'
 
 const form = createForm()
-const { SchemaField, SchemaBooleanField } = createSchemaField({
+const fields = createSchemaField({
   components: {
     FormItem,
     Switch,
   },
 })
 
-const log = (value) => {
-  console.log(value)
+export default {
+  components: { FormProvider, ...fields, Submit },
+  data() {
+    return {
+      form,
+    }
+  },
+  methods: {
+    log(value) {
+      console.log(value)
+    },
+  },
 }
 </script>

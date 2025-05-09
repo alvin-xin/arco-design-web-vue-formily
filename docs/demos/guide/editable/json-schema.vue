@@ -7,7 +7,7 @@
   </FormProvider>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts">
 import { createForm } from '@formily/core'
 import { FormProvider, createSchemaField } from '@formily/vue'
 import {
@@ -17,7 +17,7 @@ import {
   Input,
   DatePicker,
   Editable,
-} from 'arco-vue-formily'
+} from 'arco-design-web-vue-formily'
 
 const { SchemaField } = createSchemaField({
   components: {
@@ -88,10 +88,27 @@ const schema = {
   },
 }
 
-const form = createForm()
+export default {
+  components: {
+    FormButtonGroup,
+    FormProvider,
+    Submit,
+    SchemaField,
+  },
 
-const log = (values) => {
-  console.log(values)
+  data() {
+    const form = createForm()
+
+    return {
+      schema,
+      form,
+    }
+  },
+  methods: {
+    log(values) {
+      console.log(values)
+    },
+  },
 }
 </script>
 

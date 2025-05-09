@@ -1,6 +1,6 @@
 <template>
   <FormProvider :form="form">
-    <FormLayout :labelCol="6" :wrapperCol="16">
+    <FormLayout :label-col="6" :wrapper-col="16">
       <VoidField
         name="name"
         title="姓名"
@@ -77,7 +77,7 @@
         title="文本框"
         :decorator="[FormItem]"
         :component="[
-          Input.TextArea,
+          Textarea,
           {
             style: {
               width: 400,
@@ -86,28 +86,50 @@
         ]"
         required
       />
-      <FormButtonGroup alignFormItem>
-        <Submit :onSubmit="log">提交</Submit>
+      <FormButtonGroup align-form-item>
+        <Submit :on-submit="log">提交</Submit>
       </FormButtonGroup>
     </FormLayout>
   </FormProvider>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts">
 import { createForm } from '@formily/core'
 import { FormProvider, Field, VoidField } from '@formily/vue'
 import {
   FormLayout,
   FormItem,
   Input,
+  Textarea,
   Submit,
   Space,
   FormButtonGroup,
-} from 'arco-vue-formily'
+} from 'arco-design-web-vue-formily'
 
 const form = createForm()
 
-const log = (value) => {
-  console.log(value)
+export default {
+  components: {
+    FormProvider,
+    FormLayout,
+    FormButtonGroup,
+    VoidField,
+    Field,
+    Submit,
+  },
+  data() {
+    return {
+      FormItem,
+      Input,
+      Textarea,
+      Space,
+      form,
+    }
+  },
+  methods: {
+    log(value) {
+      console.log(value)
+    },
+  },
 }
 </script>

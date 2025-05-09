@@ -168,6 +168,8 @@ const ArrayCollapseInner = observer(
                         {
                           class: [`${prefixCls}-errors-badge`],
                           count: errors.length,
+                          size: 'mini',
+                          dot: true,
                         },
                         { default: () => headerTitle }
                       )

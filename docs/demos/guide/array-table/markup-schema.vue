@@ -7,20 +7,22 @@
         x-component="ArrayTable"
         :x-component-props="{
           pagination: { pageSize: 10 },
+          scroll: { x: 800 },
         }"
       >
         <SchemaObjectField>
           <SchemaVoidField
             x-component="ArrayTable.Column"
-            :x-component-props="{ width: 80, title: 'Index' }"
-            ><SchemaVoidField
+            :x-component-props="{ width: 80, title: 'Index', align: 'center' }"
+          >
+            <SchemaVoidField
               x-decorator="FormItem"
               x-component="ArrayTable.Index"
             />
           </SchemaVoidField>
           <SchemaVoidField
             x-component="ArrayTable.Column"
-            :x-component-props="{ prop: 'a1', title: 'A1', width: 200 }"
+            :x-component-props="{ title: 'A1', dataIndex: 'a1', width: 200 }"
           >
             <SchemaStringField
               x-decorator="Editable"
@@ -42,7 +44,7 @@
           </SchemaVoidField>
           <SchemaVoidField
             x-component="ArrayTable.Column"
-            :x-component-props="{ title: 'A3' }"
+            :x-component-props="{ title: 'A3', width: 200 }"
           >
             <SchemaStringField
               name="a3"
@@ -55,7 +57,7 @@
             x-component="ArrayTable.Column"
             :x-component-props="{
               title: 'Operations',
-              prop: 'operations',
+              dataIndex: 'operations',
               width: 200,
               fixed: 'right',
             }"
@@ -71,7 +73,7 @@
       </SchemaArrayField>
     </SchemaField>
     <Submit @submit="log">提交</Submit>
-    <ElButton
+    <Button
       @click="
         () => {
           form.setInitialValues({
@@ -81,16 +83,16 @@
       "
     >
       加载10W条超大数据
-    </ElButton>
-    <ElAlert
+    </Button>
+    <Alert
       :style="{ marginTop: '10px' }"
-      title="注意：开启formily插件的页面，因为后台有数据通信，会占用浏览器算力，最好在无痕模式(无formily插件)下测试"
+      message="注意：开启formily插件的页面，因为后台有数据通信，会占用浏览器算力，最好在无痕模式(无formily插件)下测试"
       type="warning"
     />
   </FormProvider>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts">
 import { createForm } from '@formily/core'
 import { FormProvider, createSchemaField } from '@formily/vue'
 import {
@@ -99,19 +101,10 @@ import {
   ArrayTable,
   Input,
   Editable,
-} from 'arco-vue-formily'
-// import { ElButton, ElAlert } from 'element-plus'
-import { Button as ElButton, Alert as ElAlert } from "@arco-design/web-vue";
+} from 'arco-design-web-vue-formily'
+import { Button, Alert } from '@arco-design/web-vue'
 
-const form = createForm()
-
-const {
-  SchemaField,
-  SchemaArrayField,
-  SchemaObjectField,
-  SchemaVoidField,
-  SchemaStringField,
-} = createSchemaField({
+const fields = createSchemaField({
   components: {
     FormItem,
     ArrayTable,
@@ -120,13 +113,24 @@ const {
   },
 })
 
-const log = (...v) => {
-  console.log(...v)
-}
-
-const range = (count) => {
-  return Array.from(new Array(count)).map((_, key) => ({
-    aaa: key,
-  }))
+export default {
+  // eslint-disable-next-line vue/no-reserved-component-names
+  components: { FormProvider, Submit, Button, Alert, ...fields },
+  data() {
+    const form = createForm()
+    return {
+      form,
+    }
+  },
+  methods: {
+    log(...v) {
+      console.log(...v)
+    },
+    range(count) {
+      return Array.from(new Array(count)).map((_, key) => ({
+        aaa: key,
+      }))
+    },
+  },
 }
 </script>

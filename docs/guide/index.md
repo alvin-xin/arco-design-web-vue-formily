@@ -1,8 +1,8 @@
-# Element-Plus
+# Antdv-x3
 
 ## 介绍
 
-arco-vue-formily 是基于 element-plus 封装的针对表单场景专业级(Professional)组件库，它主要有以下几个特点：
+arco-design-web-vue-formily 是基于 Antdv 封装的针对表单场景专业级(Professional)组件库，它主要有以下几个特点：
 
 - 更丰富的组件体系
 
@@ -34,6 +34,7 @@ arco-vue-formily 是基于 element-plus 封装的针对表单场景专业级(Pro
     - ArrayItems
     - ArrayTable
     - ArrayTabs
+    - ArrayCollapse
     - FormCollapse
     - FormStep
     - FormTab
@@ -57,69 +58,18 @@ arco-vue-formily 是基于 element-plus 封装的针对表单场景专业级(Pro
   - FormStep，用户只需要关注 FormStep Reactive Model 即可，通过 createFormStep 就可以创建出 Reactive Model，传给 FormStep 组件即可快速通讯。同理，FormTab/FormCollapse 也是一样的通讯模式
   - 弹窗表单，抽屉表单，想必过去，用户几乎每次都得在这两个场景上写大量的代码，这次直接提供了极其简易的 API 让用户使用，最大化提升开发效率
 
-## 注意
-
-因为 Element-Plus 是基于 Sass 构建的，如果你用 Webpack 配置请使用以下两个 Sass 工具
-
-```
-"sass": "1.32.11",
-"sass-loader": "8.0.2"
-```
-
 ## 安装
 
 ```bash
-$ npm install --save element-plus
-$ npm install --save @formily/core @formily/vue @vue/composition-api arco-vue-formily
+$ npm install --save ant-design-vue
+$ npm install --save @formily/core @formily/vue vue arco-design-web-vue-formily
 ```
 
 ## 按需打包
 
-`Element Plus` 按需引入参见 [https://element-plus.gitee.io/zh-CN/guide/quickstart.html#按需引入](https://element-plus.gitee.io/zh-CN/guide/quickstart.html#按需引入)
+`Antdv` 按需引入参见 [https://antdv.com/docs/vue/getting-started-cn/](https://antdv.com/docs/vue/getting-started-cn/#%E6%8C%89%E9%9C%80%E5%8A%A0%E8%BD%BD)
 
-### vite
-
-`arco-vue-formily` 在 vite 项目中按需引入需借助 `vite-plugin-imp`
-
-```shell
-npm install vite-plugin-imp --save-dev
-```
-
-或者
-
-```shell
-yarn add vite-plugin-imp --dev
-```
-
-src/main.ts
-
-```ts
-import 'element-plus/theme-chalk/src/base.scss'
-```
-
-vite.config.ts
-
-```ts
-import vitePluginImp from 'vite-plugin-imp'
-
-export default defineConfig({
-  plugins: [
-    vitePluginImp({
-      libList: [
-        {
-          libName: 'arco-vue-formily',
-          libDirectory: 'esm',
-          style(name) {
-            return `arco-vue-formily/esm/${name}/style.js`
-          },
-        },
-      ],
-    }),
-  ],
-})
-```
-
-### webpack || vue-cli
+`arco-design-web-vue-formily`按需引入需借助 `babel-plugin-import`
 
 #### 安装 `babel-plugin-import`
 
@@ -133,12 +83,6 @@ npm install babel-plugin-import --save-dev
 yarn add babel-plugin-import --dev
 ```
 
-src/main.ts
-
-```ts
-import 'element-plus/theme-chalk/src/base.scss'
-```
-
 修改 `.babelrc`
 
 ```json
@@ -147,10 +91,20 @@ import 'element-plus/theme-chalk/src/base.scss'
     [
       "import",
       {
-        "libraryName": "arco-vue-formily",
+        "libraryName": "ant-design-vue",
+        "styleLibraryName": "es",
+        "style": true
+      },
+      "antdv"
+    ],
+    [
+      "import",
+      {
+        "libraryName": "arco-design-web-vue-formily",
         "libraryDirectory": "esm",
         "style": true
-      }
+      },
+      "arco-design-web-vue-formily"
     ]
   ]
 }

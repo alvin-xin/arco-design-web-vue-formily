@@ -3,7 +3,7 @@
     <SchemaField>
       <SchemaArrayField
         name="string_array"
-        :maxItems="3"
+        :max-items="3"
         x-decorator="FormItem"
         x-component="ArrayCollapse"
         :x-component-props="{
@@ -12,9 +12,9 @@
         }"
       >
         <SchemaVoidField
-          x-component="ArrayCollapse.Item"
+          x-component="ArrayCollapse.CollapsePanel"
           :x-component-props="{
-            title: '字符串数组',
+            header: '字符串数组',
           }"
         >
           <SchemaVoidField x-component="ArrayCollapse.Index" />
@@ -36,14 +36,14 @@
       </SchemaArrayField>
       <SchemaArrayField
         name="array"
-        :maxItems="3"
+        :max-items="3"
         x-decorator="FormItem"
         x-component="ArrayCollapse"
       >
         <SchemaObjectField
           x-component="ArrayCollapse.Item"
           :x-component-props="{
-            title: '对象数组',
+            header: '对象数组',
           }"
         >
           <SchemaVoidField x-component="ArrayCollapse.Index" />
@@ -65,7 +65,7 @@
       </SchemaArrayField>
       <SchemaArrayField
         name="string_array_unshift"
-        :maxItems="3"
+        :max-items="3"
         x-decorator="FormItem"
         x-component="ArrayCollapse"
         :x-component-props="{
@@ -75,7 +75,7 @@
         <SchemaVoidField
           x-component="ArrayCollapse.Item"
           :x-component-props="{
-            title: '字符串数组',
+            header: '字符串数组',
           }"
         >
           <SchemaVoidField x-component="ArrayCollapse.Index" />
@@ -100,7 +100,7 @@
       </SchemaArrayField>
     </SchemaField>
     <FormButtonGroup>
-      <ElButton
+      <Button
         @click="
           () => {
             form.setInitialValues({
@@ -118,13 +118,13 @@
         "
       >
         加载默认数据
-      </ElButton>
+      </Button>
       <Submit @submit="log">提交</Submit>
     </FormButtonGroup>
   </FormProvider>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts">
 import { createForm } from '@formily/core'
 import { FormProvider, createSchemaField } from '@formily/vue'
 import {
@@ -133,16 +133,10 @@ import {
   Submit,
   Input,
   ArrayCollapse,
-} from 'arco-vue-formily'
-import { ElButton } from 'element-plus'
+} from 'arco-design-web-vue-formily'
+import { Button } from '@arco-design/web-vue'
 
-const {
-  SchemaField,
-  SchemaArrayField,
-  SchemaObjectField,
-  SchemaVoidField,
-  SchemaStringField,
-} = createSchemaField({
+const SchemaField = createSchemaField({
   components: {
     FormItem,
     Input,
@@ -150,10 +144,28 @@ const {
   },
 })
 
-const form = createForm()
+export default {
+  components: {
+    FormProvider,
+    FormButtonGroup,
+    // eslint-disable-next-line vue/no-reserved-component-names
+    Button,
+    Submit,
+    ...SchemaField,
+  },
 
-const log = (values) => {
-  console.log(values)
+  data() {
+    const form = createForm()
+
+    return {
+      form,
+    }
+  },
+  methods: {
+    log(values) {
+      console.log(values)
+    },
+  },
 }
 </script>
 

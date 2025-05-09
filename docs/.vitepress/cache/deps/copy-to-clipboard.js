@@ -1,6 +1,6 @@
 import {
   __commonJS
-} from "./chunk-PLDDJCW6.js";
+} from "./chunk-PR4QN5HX.js";
 
 // node_modules/toggle-selection/index.js
 var require_toggle_selection = __commonJS({
@@ -65,7 +65,6 @@ var require_copy_to_clipboard = __commonJS({
         selection = document.getSelection();
         mark = document.createElement("span");
         mark.textContent = text;
-        mark.ariaHidden = "true";
         mark.style.all = "unset";
         mark.style.position = "fixed";
         mark.style.top = 0;

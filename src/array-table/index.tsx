@@ -249,7 +249,7 @@ const StatusSelect = observer(
                   {
                     default: () => {
                       if (hasError) {
-                        return h(Badge, { dot: true }, () => label)
+                        return h(Badge, { size: 'mini', dot: true }, () => label)
                       }
                       return label
                     },

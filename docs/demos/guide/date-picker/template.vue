@@ -8,34 +8,24 @@
     />
     <Field
       name="week"
-      title="周"
+      title="周选择"
       :decorator="[FormItem]"
-      :component="[
-        DatePicker,
-        {
-          type: 'week',
-        },
-      ]"
+      :component="[WeekPicker]"
     />
     <Field
       name="month"
-      title="月"
+      title="月选择"
       :decorator="[FormItem]"
-      :component="[
-        DatePicker,
-        {
-          type: 'month',
-        },
-      ]"
+      :component="[MonthPicker]"
     />
     <Field
       name="year"
-      title="年"
+      title="年选择"
       :decorator="[FormItem]"
       :component="[
         DatePicker,
         {
-          type: 'year',
+          picker: 'year',
         },
       ]"
     />
@@ -46,51 +36,18 @@
       :component="[
         DatePicker,
         {
-          type: 'datetime',
+          showTime: true,
         },
       ]"
     />
     <ArrayField
-      name="dates"
+      name="[startDate,endDate]"
       title="多个日期"
       :decorator="[FormItem]"
       :component="[
-        DatePicker,
+        RangePicker,
         {
-          type: 'dates',
-        },
-      ]"
-    />
-    <ArrayField
-      name="dateRange"
-      title="日期范围"
-      :decorator="[FormItem]"
-      :component="[
-        DatePicker,
-        {
-          type: 'daterange',
-        },
-      ]"
-    />
-    <ArrayField
-      name="monthRange"
-      title="月范围"
-      :decorator="[FormItem]"
-      :component="[
-        DatePicker,
-        {
-          type: 'monthrange',
-        },
-      ]"
-    />
-    <ArrayField
-      name="dateTimeRange"
-      title="日期时间范围"
-      :decorator="[FormItem]"
-      :component="[
-        DatePicker,
-        {
-          type: 'datetimerange',
+          showTime: true,
         },
       ]"
     />
@@ -98,14 +55,28 @@
   </Form>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts">
 import { createForm } from '@formily/core'
 import { Field, ArrayField } from '@formily/vue'
-import { Form, FormItem, DatePicker, Submit } from 'arco-vue-formily'
+import { Form, FormItem, DatePicker, WeekPicker, MonthPicker, YearPicker, RangePicker, Submit } from 'arco-design-web-vue-formily'
 
 const form = createForm()
 
-const onSubmit = (value) => {
-  console.log(value)
+export default {
+  // eslint-disable-next-line vue/no-reserved-component-names
+  components: { Form, Field, ArrayField, Submit,   },
+  data() {
+    return {
+      FormItem,
+      DatePicker,
+      form,
+      WeekPicker, MonthPicker, YearPicker, RangePicker,
+    }
+  },
+  methods: {
+    onSubmit(value) {
+      console.log(value)
+    },
+  },
 }
 </script>

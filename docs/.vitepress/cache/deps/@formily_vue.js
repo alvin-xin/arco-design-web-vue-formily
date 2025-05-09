@@ -12,7 +12,10 @@ import {
   onFieldValidateStart,
   onFieldValidateSuccess,
   onFieldValueChange
-} from "./chunk-K3QC3TLX.js";
+} from "./chunk-IFJRZNIX.js";
+import {
+  observer
+} from "./chunk-SRGO5UR7.js";
 import {
   Path,
   each,
@@ -22,29 +25,27 @@ import {
   isPlainObj,
   isStr,
   isValid,
+  lazyMerge,
   lowerCase,
   map,
   paramCase,
   reduce,
   toArr,
   uid
-} from "./chunk-AKVXTLRZ.js";
-import {
-  observer
-} from "./chunk-KWJQIQ2G.js";
+} from "./chunk-4NCPBOGJ.js";
 import {
   autorun,
   hasCollected,
   isObservable,
   observable,
+  reaction,
   toJS,
   untracked
-} from "./chunk-L67TUHYQ.js";
+} from "./chunk-BXC2GHWD.js";
 import {
   computed,
   defineComponent,
   h,
-  init_vue_runtime_esm_bundler,
   inject,
   markRaw,
   nextTick,
@@ -56,11 +57,12 @@ import {
   shallowRef,
   toRaw,
   toRef,
-  watch
-} from "./chunk-VP2EYFDR.js";
+  watch,
+  watchEffect
+} from "./chunk-LW4I4DCF.js";
 import {
   __export
-} from "./chunk-PLDDJCW6.js";
+} from "./chunk-PR4QN5HX.js";
 
 // node_modules/@formily/json-schema/esm/shared.js
 var REVA_ACTIONS_KEY = Symbol.for("__REVA_ACTIONS");
@@ -149,21 +151,27 @@ var traverse = function(target, visitor) {
   traverse2(target);
 };
 var traverseSchema = function(schema, visitor) {
+  var _a;
   if (schema["x-validator"] !== void 0) {
-    visitor(schema["x-validator"], ["x-validator"]);
+    visitor(schema["x-validator"], ["x-validator"], (_a = schema["x-compile-omitted"]) === null || _a === void 0 ? void 0 : _a.includes("x-validator"));
   }
   var seenObjects = [];
   var root = schema;
   var traverse2 = function(target, path) {
+    var _a2;
     if (path === void 0) {
       path = [];
     }
-    if (path[0] === "x-validator" || path[0] === "version" || path[0] === "_isJSONSchemaObject")
+    if (path[0] === "x-compile-omitted" || path[0] === "x-validator" || path[0] === "version" || path[0] === "_isJSONSchemaObject")
       return;
     if (String(path[0]).indexOf("x-") == -1 && isFn(target))
       return;
     if (SchemaNestedMap[path[0]])
       return;
+    if (((_a2 = schema["x-compile-omitted"]) === null || _a2 === void 0 ? void 0 : _a2.indexOf(path[0])) > -1) {
+      visitor(target, path, true);
+      return;
+    }
     if (isPlainObj(target)) {
       if (path[0] === "default" || path[0] === "x-value") {
         visitor(target, path);
@@ -313,11 +321,11 @@ var compile = function(source, scope) {
 };
 var patchCompile = function(targetState, sourceState, scope) {
   traverse(sourceState, function(value, pattern) {
-    var path = Path.parse(pattern);
     var compiled = compile(value, scope);
-    var key = path.segments[0];
     if (compiled === void 0)
       return;
+    var path = Path.parse(pattern);
+    var key = path.segments[0];
     if (hasOwnProperty.call(targetState, key)) {
       untracked(function() {
         return Path.setIn(targetState, path, compiled);
@@ -329,10 +337,12 @@ var patchSchemaCompile = function(targetState, sourceSchema, scope, demand) {
   if (demand === void 0) {
     demand = false;
   }
-  traverseSchema(sourceSchema, function(value, path) {
+  traverseSchema(sourceSchema, function(value, path, omitCompile) {
     var compiled = value;
     var collected = hasCollected(function() {
-      compiled = compile(value, scope);
+      if (!omitCompile) {
+        compiled = compile(value, scope);
+      }
     });
     if (compiled === void 0)
       return;
@@ -347,17 +357,6 @@ var patchSchemaCompile = function(targetState, sourceSchema, scope, demand) {
 };
 
 // node_modules/@formily/json-schema/esm/transformer.js
-var __assign = function() {
-  __assign = Object.assign || function(t) {
-    for (var s, i = 1, n = arguments.length; i < n; i++) {
-      s = arguments[i];
-      for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-        t[p] = s[p];
-    }
-    return t;
-  };
-  return __assign.apply(this, arguments);
-};
 var __read = function(o, n) {
   var m = typeof Symbol === "function" && o[Symbol.iterator];
   if (!m) return o;
@@ -423,17 +422,23 @@ var setSchemaFieldState = function(options, demand) {
   if (target) {
     if (request.state) {
       field.form.setFieldState(target, function(state) {
-        return patchCompile(state, request.state, __assign(__assign({}, scope), { $target: state }));
+        return patchCompile(state, request.state, lazyMerge(scope, {
+          $target: state
+        }));
       });
     }
     if (request.schema) {
       field.form.setFieldState(target, function(state) {
-        return patchSchemaCompile(state, request.schema, __assign(__assign({}, scope), { $target: state }), demand);
+        return patchSchemaCompile(state, request.schema, lazyMerge(scope, {
+          $target: state
+        }), demand);
       });
     }
     if (isStr(runner) && runner) {
       field.form.setFieldState(target, function(state) {
-        shallowCompile("{{function(){".concat(runner, "}}}"), __assign(__assign({}, scope), { $target: state }))();
+        shallowCompile("{{function(){".concat(runner, "}}}"), lazyMerge(scope, {
+          $target: state
+        }))();
       });
     }
   } else {
@@ -469,7 +474,41 @@ var getBaseScope = function(field, options) {
   var $self = field;
   var $form = field.form;
   var $values = field.form.values;
-  return __assign(__assign({}, options.scope), { $form, $self, $observable, $effect, $memo, $props, $values });
+  return lazyMerge({
+    get $lookup() {
+      var _a, _b;
+      return (_b = (_a = options === null || options === void 0 ? void 0 : options.scope) === null || _a === void 0 ? void 0 : _a.$record) !== null && _b !== void 0 ? _b : $values;
+    },
+    get $records() {
+      return field.records;
+    },
+    get $record() {
+      var record = field.record;
+      if (typeof record === "object") {
+        return lazyMerge(record, {
+          get $lookup() {
+            var _a, _b;
+            return (_b = (_a = options === null || options === void 0 ? void 0 : options.scope) === null || _a === void 0 ? void 0 : _a.$record) !== null && _b !== void 0 ? _b : $values;
+          },
+          get $index() {
+            return field.index;
+          }
+        });
+      }
+      return record;
+    },
+    get $index() {
+      return field.index;
+    }
+  }, options.scope, {
+    $form,
+    $self,
+    $observable,
+    $effect,
+    $memo,
+    $props,
+    $values
+  });
 };
 var getBaseReactions = function(schema, options) {
   return function(field) {
@@ -485,21 +524,25 @@ var getUserReactions = function(schema, options) {
   return reactions.map(function(unCompiled) {
     return function(field) {
       var baseScope = getBaseScope(field, options);
-      var reaction = shallowCompile(unCompiled, baseScope);
-      if (!reaction)
+      var reaction2 = shallowCompile(unCompiled, baseScope);
+      if (!reaction2)
         return;
-      if (isFn(reaction)) {
-        return reaction(field, baseScope);
+      if (isFn(reaction2)) {
+        return reaction2(field, baseScope);
       }
-      var when = reaction.when, fulfill = reaction.fulfill, otherwise = reaction.otherwise, target = reaction.target, effects = reaction.effects;
+      var when = reaction2.when, fulfill = reaction2.fulfill, otherwise = reaction2.otherwise, target = reaction2.target, effects = reaction2.effects;
       var run = function() {
-        var $deps = getDependencies(field, reaction.dependencies);
+        var $deps = getDependencies(field, reaction2.dependencies);
         var $dependencies = $deps;
-        var scope = __assign(__assign({}, baseScope), { $target: null, $deps, $dependencies });
+        var scope = lazyMerge(baseScope, {
+          $target: null,
+          $deps,
+          $dependencies
+        });
         var compiledWhen = shallowCompile(when, scope);
         var condition = when ? compiledWhen : true;
         var request = condition ? fulfill : otherwise;
-        var runner = condition ? fulfill === null || fulfill === void 0 ? void 0 : fulfill.run : otherwise === null || otherwise === void 0 ? void 0 : otherwise.run;
+        var runner = request === null || request === void 0 ? void 0 : request.run;
         setSchemaFieldState({
           field,
           target,
@@ -509,12 +552,12 @@ var getUserReactions = function(schema, options) {
         });
       };
       if (target) {
-        reaction.effects = (effects === null || effects === void 0 ? void 0 : effects.length) ? effects : DefaultFieldEffects;
+        reaction2.effects = (effects === null || effects === void 0 ? void 0 : effects.length) ? effects : DefaultFieldEffects;
       }
-      if (reaction.effects) {
+      if (reaction2.effects) {
         autorun.memo(function() {
           untracked(function() {
-            each(reaction.effects, function(type) {
+            each(reaction2.effects, function(type) {
               if (FieldEffects[type]) {
                 FieldEffects[type](field.address, run);
               }
@@ -535,8 +578,8 @@ var transformFieldProps = function(schema, options) {
 };
 
 // node_modules/@formily/json-schema/esm/patches.js
-var __assign2 = function() {
-  __assign2 = Object.assign || function(t) {
+var __assign = function() {
+  __assign = Object.assign || function(t) {
     for (var s, i = 1, n = arguments.length; i < n; i++) {
       s = arguments[i];
       for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
@@ -544,14 +587,14 @@ var __assign2 = function() {
     }
     return t;
   };
-  return __assign2.apply(this, arguments);
+  return __assign.apply(this, arguments);
 };
 var patches = [];
 var polyfills = {};
 var reducePatches = function(schema) {
   return patches.reduce(function(buf, patch) {
     return patch(buf);
-  }, __assign2({}, schema));
+  }, __assign({}, schema));
 };
 var registerPatches = function() {
   var args = [];
@@ -583,8 +626,8 @@ var enablePolyfills = function(versions) {
 };
 
 // node_modules/@formily/json-schema/esm/polyfills/SPECIFICATION_1_0.js
-var __assign3 = function() {
-  __assign3 = Object.assign || function(t) {
+var __assign2 = function() {
+  __assign2 = Object.assign || function(t) {
     for (var s, i = 1, n = arguments.length; i < n; i++) {
       s = arguments[i];
       for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
@@ -592,7 +635,7 @@ var __assign3 = function() {
     }
     return t;
   };
-  return __assign3.apply(this, arguments);
+  return __assign2.apply(this, arguments);
 };
 var __read2 = function(o, n) {
   var m = typeof Symbol === "function" && o[Symbol.iterator];
@@ -662,10 +705,10 @@ var transformXLinkage = function(linkages) {
           target: item.target,
           when: transformCondition(item.condition),
           fulfill: {
-            schema: SpecificationV1Polyfill(__assign3({ version: "1.0" }, item.schema))
+            schema: SpecificationV1Polyfill(__assign2({ version: "1.0" }, item.schema))
           },
           otherwise: {
-            schema: SpecificationV1Polyfill(__assign3({ version: "1.0" }, item.otherwise))
+            schema: SpecificationV1Polyfill(__assign2({ version: "1.0" }, item.otherwise))
           }
         });
       } else if (item.type === "value:state") {
@@ -968,9 +1011,7 @@ var Schema = (
   }()
 );
 
-// node_modules/@formily/vue/node_modules/vue-demi/lib/index.esm.js
-init_vue_runtime_esm_bundler();
-init_vue_runtime_esm_bundler();
+// node_modules/@formily/vue/node_modules/vue-demi/lib/index.mjs
 var isVue2 = false;
 
 // node_modules/@formily/vue/esm/shared/context.js
@@ -1272,8 +1313,8 @@ var fragment = {
 };
 
 // node_modules/@formily/vue/esm/shared/fragment.js
-var __assign4 = function() {
-  __assign4 = Object.assign || function(t) {
+var __assign3 = function() {
+  __assign3 = Object.assign || function(t) {
     for (var s, i = 1, n = arguments.length; i < n; i++) {
       s = arguments[i];
       for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
@@ -1281,17 +1322,18 @@ var __assign4 = function() {
     }
     return t;
   };
-  return __assign4.apply(this, arguments);
+  return __assign3.apply(this, arguments);
 };
 var Fragment = "#fragment";
 var FragmentComponent;
 if (isVue2) {
-  FragmentComponent = __assign4({ name: "Fragment" }, fragment);
+  FragmentComponent = __assign3({ name: "Fragment" }, fragment);
 } else {
   FragmentComponent = defineComponent({
     name: "Fragment",
     render: function() {
-      return this.$slots.default();
+      var _a, _b;
+      return (_b = (_a = this.$slots).default) === null || _b === void 0 ? void 0 : _b.call(_a);
     }
   });
 }
@@ -1317,8 +1359,8 @@ var formatVue3VNodeData = function(data) {
 };
 
 // node_modules/@formily/vue/esm/shared/h.js
-var __assign5 = function() {
-  __assign5 = Object.assign || function(t) {
+var __assign4 = function() {
+  __assign4 = Object.assign || function(t) {
     for (var s, i = 1, n = arguments.length; i < n; i++) {
       s = arguments[i];
       for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
@@ -1326,7 +1368,7 @@ var __assign5 = function() {
     }
     return t;
   };
-  return __assign5.apply(this, arguments);
+  return __assign4.apply(this, arguments);
 };
 var compatibleCreateElement = function(tag, data, components) {
   if (isVue2) {
@@ -1348,7 +1390,7 @@ var compatibleCreateElement = function(tag, data, components) {
       if (!newData.scopedSlots) {
         newData.scopedSlots = scopedSlots;
       } else {
-        newData.scopedSlots = __assign5(__assign5({}, newData.scopedSlots), scopedSlots);
+        newData.scopedSlots = __assign4(__assign4({}, newData.scopedSlots), scopedSlots);
       }
     }
     if (tag === Fragment) {
@@ -1412,10 +1454,15 @@ var useField = function() {
 // node_modules/@formily/vue/esm/hooks/useFormEffects.js
 var useFormEffects = function(effects) {
   var formRef = useForm();
-  var id = uid();
-  formRef.value.addEffects(id, effects);
+  var stop = watchEffect(function(onCleanup) {
+    var id = uid();
+    formRef.value.addEffects(id, effects);
+    onCleanup(function() {
+      formRef.value.removeEffects(id);
+    });
+  });
   onBeforeUnmount(function() {
-    formRef.value.removeEffects(id);
+    return stop();
   });
 };
 
@@ -1469,8 +1516,8 @@ var FormConsumer_default = observer(defineComponent({
 });
 
 // node_modules/@formily/vue/esm/shared/connect.js
-var __assign6 = function() {
-  __assign6 = Object.assign || function(t) {
+var __assign5 = function() {
+  __assign5 = Object.assign || function(t) {
     for (var s, i = 1, n = arguments.length; i < n; i++) {
       s = arguments[i];
       for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
@@ -1478,7 +1525,7 @@ var __assign6 = function() {
     }
     return t;
   };
-  return __assign6.apply(this, arguments);
+  return __assign5.apply(this, arguments);
 };
 function mapProps() {
   var args = [];
@@ -1493,11 +1540,14 @@ function mapProps() {
         each(mapper, function(to, extract) {
           var extractValue = Path.getIn(field, extract);
           var targetValue = isStr(to) ? to : extract;
+          var originalValue = Path.getIn(props, targetValue);
           if (extract === "value") {
             if (to !== extract) {
               delete props["value"];
             }
           }
+          if (isValid(originalValue) && !isValid(extractValue))
+            return;
           Path.setIn(props, targetValue, extractValue);
         });
       }
@@ -1505,32 +1555,20 @@ function mapProps() {
     }, input);
   };
   return function(target) {
-    if (isVue2) {
-      return defineComponent({
-        functional: true,
-        name: target.name ? "Connected".concat(target.name) : "ConnectedComponent",
-        render: function(createElement, context) {
-          var fieldRef = useField();
-          var data = context.data;
-          var attrs = fieldRef.value ? transform(__assign6(__assign6({}, data.attrs), data.props), fieldRef.value) : __assign6(__assign6({}, data.attrs), data.props);
-          return createElement(target, __assign6(__assign6({}, data), { attrs }), context.children);
-        }
-      });
-    } else {
-      return observer(defineComponent({
-        name: target.name ? "Connected".concat(target.name) : "ConnectedComponent",
-        setup: function(props, _a) {
-          var attrs = _a.attrs, slots = _a.slots;
-          var fieldRef = useField();
-          return function() {
-            var newAttrs = fieldRef.value ? transform(__assign6({}, attrs), fieldRef.value) : __assign6({}, attrs);
-            return h_default(target, {
-              attrs: newAttrs
-            }, slots);
-          };
-        }
-      }));
-    }
+    return observer(defineComponent({
+      name: target.name ? "Connected".concat(target.name) : "ConnectedComponent",
+      setup: function(props, _a) {
+        var attrs = _a.attrs, slots = _a.slots, listeners = _a.listeners;
+        var fieldRef = useField();
+        return function() {
+          var newAttrs = fieldRef.value ? transform(__assign5({}, attrs), fieldRef.value) : __assign5({}, attrs);
+          return h_default(target, {
+            attrs: newAttrs,
+            on: listeners
+          }, slots);
+        };
+      }
+    }));
   };
 }
 function mapReadPretty(component, readPrettyProps) {
@@ -1543,7 +1581,7 @@ function mapReadPretty(component, readPrettyProps) {
         return function() {
           var field = fieldRef.value;
           return h_default(field && !isVoidField(field) && field.pattern === "readPretty" ? component : target, {
-            attrs: __assign6(__assign6({}, readPrettyProps), attrs),
+            attrs: __assign5(__assign5({}, readPrettyProps), attrs),
             on: listeners
           }, slots);
         };
@@ -1619,8 +1657,8 @@ var createRawForm = function() {
 };
 
 // node_modules/@formily/vue/esm/components/ReactiveField.js
-var __assign7 = function() {
-  __assign7 = Object.assign || function(t) {
+var __assign6 = function() {
+  __assign6 = Object.assign || function(t) {
     for (var s, i = 1, n = arguments.length; i < n; i++) {
       s = arguments[i];
       for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
@@ -1628,7 +1666,7 @@ var __assign7 = function() {
     }
     return t;
   };
-  return __assign7.apply(this, arguments);
+  return __assign6.apply(this, arguments);
 };
 var __read4 = function(o, n) {
   var m = typeof Symbol === "function" && o[Symbol.iterator];
@@ -1712,7 +1750,11 @@ var mergeSlots = function(field, slots, content) {
   var patchSlot = function(slotName) {
     return function() {
       var _a2, _b;
-      return (_b = (_a2 = slots[slotName]) === null || _a2 === void 0 ? void 0 : _a2.call(slots, { field, form: field.form })) !== null && _b !== void 0 ? _b : [];
+      var originArgs = [];
+      for (var _i = 0; _i < arguments.length; _i++) {
+        originArgs[_i] = arguments[_i];
+      }
+      return (_b = (_a2 = slots[slotName]) === null || _a2 === void 0 ? void 0 : _a2.call(slots, __assign6({ field, form: field.form }, originArgs[0]))) !== null && _b !== void 0 ? _b : [];
     };
   };
   var patchedSlots = {};
@@ -1735,6 +1777,16 @@ var mergeSlots = function(field, slots, content) {
   }, content);
   return patchedSlots;
 };
+var createFieldInVue2 = function(innerCreateField) {
+  return function() {
+    var res;
+    var disposer = reaction(function() {
+      res = innerCreateField();
+    });
+    disposer();
+    return res;
+  };
+};
 var ReactiveField_default = observer({
   name: "ReactiveField",
   props: {
@@ -1756,8 +1808,11 @@ var ReactiveField_default = observer({
     var optionsRef = inject(SchemaOptionsSymbol, ref(null));
     var createField = function() {
       var _a2, _b, _c, _d, _e;
-      return (_b = (_a2 = formRef === null || formRef === void 0 ? void 0 : formRef.value) === null || _a2 === void 0 ? void 0 : _a2["create".concat(props.fieldType)]) === null || _b === void 0 ? void 0 : _b.call(_a2, __assign7(__assign7({}, props.fieldProps), { basePath: (_d = (_c = props.fieldProps) === null || _c === void 0 ? void 0 : _c.basePath) !== null && _d !== void 0 ? _d : (_e = parentRef.value) === null || _e === void 0 ? void 0 : _e.address }));
+      return (_b = (_a2 = formRef === null || formRef === void 0 ? void 0 : formRef.value) === null || _a2 === void 0 ? void 0 : _a2["create".concat(props.fieldType)]) === null || _b === void 0 ? void 0 : _b.call(_a2, __assign6(__assign6({}, props.fieldProps), { basePath: (_d = (_c = props.fieldProps) === null || _c === void 0 ? void 0 : _c.basePath) !== null && _d !== void 0 ? _d : (_e = parentRef.value) === null || _e === void 0 ? void 0 : _e.address }));
     };
+    if (isVue2) {
+      createField = createFieldInVue2(createField);
+    }
     var fieldRef = shallowRef(createField());
     watch(function() {
       return props.fieldProps;
@@ -1784,10 +1839,26 @@ var ReactiveField_default = observer({
         }
         var finalComponent = (_a3 = Path.getIn(options === null || options === void 0 ? void 0 : options.components, field.decoratorType)) !== null && _a3 !== void 0 ? _a3 : field.decoratorType;
         var componentAttrs = toJS(field.decorator[1]) || {};
+        var events = {};
+        each(componentAttrs, function(value, eventKey) {
+          var onEvent = eventKey.startsWith("on");
+          var atEvent = eventKey.startsWith("@");
+          if (!onEvent && !atEvent)
+            return;
+          if (onEvent) {
+            var eventName = "".concat(eventKey[2].toLowerCase()).concat(eventKey.slice(3));
+            events[eventName] = events[eventName] || value;
+          } else if (atEvent) {
+            var eventName = eventKey.slice(1);
+            events[eventName] = value;
+            delete componentAttrs[eventKey];
+          }
+        });
         var componentData = {
           attrs: componentAttrs,
           style: componentAttrs === null || componentAttrs === void 0 ? void 0 : componentAttrs.style,
-          class: componentAttrs === null || componentAttrs === void 0 ? void 0 : componentAttrs.class
+          class: componentAttrs === null || componentAttrs === void 0 ? void 0 : componentAttrs.class,
+          on: events
         };
         delete componentData.attrs.style;
         delete componentData.attrs.class;
@@ -1807,17 +1878,19 @@ var ReactiveField_default = observer({
         var originChange = originData["@change"] || originData["onChange"];
         var originFocus = originData["@focus"] || originData["onFocus"];
         var originBlur = originData["@blur"] || originData["onBlur"];
-        Object.keys(originData).filter(function(key) {
-          return key.startsWith("on");
-        }).forEach(function(eventKey) {
-          var eventName = "".concat(eventKey[2].toLowerCase()).concat(eventKey.slice(3));
-          events[eventName] = originData[eventKey];
-        });
-        Object.keys(originData).filter(function(key) {
-          return key.startsWith("@");
-        }).forEach(function(eventKey) {
-          events[eventKey.slice(1)] = originData[eventKey];
-          delete originData[eventKey];
+        each(originData, function(value, eventKey) {
+          var onEvent = eventKey.startsWith("on");
+          var atEvent = eventKey.startsWith("@");
+          if (!onEvent && !atEvent)
+            return;
+          if (onEvent) {
+            var eventName = "".concat(eventKey[2].toLowerCase()).concat(eventKey.slice(3));
+            events[eventName] = events[eventName] || value;
+          } else if (atEvent) {
+            var eventName = eventKey.slice(1);
+            events[eventName] = value;
+            delete originData[eventKey];
+          }
         });
         events.change = function() {
           var args = [];
@@ -1847,7 +1920,7 @@ var ReactiveField_default = observer({
           originBlur === null || originBlur === void 0 ? void 0 : originBlur.apply(void 0, __spreadArray3([], __read4(args), false));
         };
         var componentData = {
-          attrs: __assign7(__assign7({ disabled: !isVoidField(field) ? field.pattern === "disabled" || field.pattern === "readPretty" : void 0, readOnly: !isVoidField(field) ? field.pattern === "readOnly" : void 0 }, originData), { value: !isVoidField(field) ? field.value : void 0 }),
+          attrs: __assign6(__assign6({ disabled: !isVoidField(field) ? field.pattern === "disabled" || field.pattern === "readPretty" : void 0, readOnly: !isVoidField(field) ? field.pattern === "readOnly" : void 0 }, originData), { value: !isVoidField(field) ? field.value : void 0 }),
           style: originData === null || originData === void 0 ? void 0 : originData.style,
           class: originData === null || originData === void 0 ? void 0 : originData.class,
           on: events
@@ -1922,8 +1995,8 @@ var getVoidFieldProps = function() {
 };
 
 // node_modules/@formily/vue/esm/components/ArrayField.js
-var __assign8 = function() {
-  __assign8 = Object.assign || function(t) {
+var __assign7 = function() {
+  __assign7 = Object.assign || function(t) {
     for (var s, i = 1, n = arguments.length; i < n; i++) {
       s = arguments[i];
       for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
@@ -1931,7 +2004,7 @@ var __assign8 = function() {
     }
     return t;
   };
-  return __assign8.apply(this, arguments);
+  return __assign7.apply(this, arguments);
 };
 var ArrayField;
 if (isVue2) {
@@ -1942,9 +2015,9 @@ if (isVue2) {
     render: function(h2, context) {
       var props = context.props;
       var attrs = context.data.attrs;
-      var componentData = __assign8(__assign8({}, context.data), { props: {
+      var componentData = __assign7(__assign7({}, context.data), { props: {
         fieldType: "ArrayField",
-        fieldProps: __assign8(__assign8(__assign8({}, attrs), props), getRawComponent(props))
+        fieldProps: __assign7(__assign7(__assign7({}, attrs), props), getRawComponent(props))
       } });
       return h(ReactiveField_default, componentData, context.children);
     }
@@ -1957,7 +2030,7 @@ if (isVue2) {
       return function() {
         var componentData = {
           fieldType: "ArrayField",
-          fieldProps: __assign8(__assign8({}, props), getRawComponent(props))
+          fieldProps: __assign7(__assign7({}, props), getRawComponent(props))
         };
         return h(ReactiveField_default, componentData, context.slots);
       };
@@ -1967,8 +2040,8 @@ if (isVue2) {
 var ArrayField_default = ArrayField;
 
 // node_modules/@formily/vue/esm/components/ObjectField.js
-var __assign9 = function() {
-  __assign9 = Object.assign || function(t) {
+var __assign8 = function() {
+  __assign8 = Object.assign || function(t) {
     for (var s, i = 1, n = arguments.length; i < n; i++) {
       s = arguments[i];
       for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
@@ -1976,7 +2049,7 @@ var __assign9 = function() {
     }
     return t;
   };
-  return __assign9.apply(this, arguments);
+  return __assign8.apply(this, arguments);
 };
 var ObjectField;
 if (isVue2) {
@@ -1987,9 +2060,9 @@ if (isVue2) {
     render: function(h2, context) {
       var props = context.props;
       var attrs = context.data.attrs;
-      var componentData = __assign9(__assign9({}, context.data), { props: {
+      var componentData = __assign8(__assign8({}, context.data), { props: {
         fieldType: "ObjectField",
-        fieldProps: __assign9(__assign9(__assign9({}, attrs), props), getRawComponent(props))
+        fieldProps: __assign8(__assign8(__assign8({}, attrs), props), getRawComponent(props))
       } });
       return h(ReactiveField_default, componentData, context.children);
     }
@@ -2002,7 +2075,7 @@ if (isVue2) {
       return function() {
         var componentData = {
           fieldType: "ObjectField",
-          fieldProps: __assign9(__assign9({}, props), getRawComponent(props))
+          fieldProps: __assign8(__assign8({}, props), getRawComponent(props))
         };
         return h(ReactiveField_default, componentData, context.slots);
       };
@@ -2012,8 +2085,8 @@ if (isVue2) {
 var ObjectField_default = ObjectField;
 
 // node_modules/@formily/vue/esm/components/VoidField.js
-var __assign10 = function() {
-  __assign10 = Object.assign || function(t) {
+var __assign9 = function() {
+  __assign9 = Object.assign || function(t) {
     for (var s, i = 1, n = arguments.length; i < n; i++) {
       s = arguments[i];
       for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
@@ -2021,7 +2094,7 @@ var __assign10 = function() {
     }
     return t;
   };
-  return __assign10.apply(this, arguments);
+  return __assign9.apply(this, arguments);
 };
 var VoidField;
 if (isVue2) {
@@ -2032,9 +2105,9 @@ if (isVue2) {
     render: function(h2, context) {
       var props = context.props;
       var attrs = context.data.attrs;
-      var componentData = __assign10(__assign10({}, context.data), { props: {
+      var componentData = __assign9(__assign9({}, context.data), { props: {
         fieldType: "VoidField",
-        fieldProps: __assign10(__assign10(__assign10({}, attrs), props), getRawComponent(props))
+        fieldProps: __assign9(__assign9(__assign9({}, attrs), props), getRawComponent(props))
       } });
       return h(ReactiveField_default, componentData, context.children);
     }
@@ -2047,7 +2120,7 @@ if (isVue2) {
       return function() {
         var componentData = {
           fieldType: "VoidField",
-          fieldProps: __assign10(__assign10({}, props), getRawComponent(props))
+          fieldProps: __assign9(__assign9({}, props), getRawComponent(props))
         };
         return h(ReactiveField_default, componentData, context.slots);
       };
@@ -2057,8 +2130,8 @@ if (isVue2) {
 var VoidField_default = VoidField;
 
 // node_modules/@formily/vue/esm/components/Field.js
-var __assign11 = function() {
-  __assign11 = Object.assign || function(t) {
+var __assign10 = function() {
+  __assign10 = Object.assign || function(t) {
     for (var s, i = 1, n = arguments.length; i < n; i++) {
       s = arguments[i];
       for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
@@ -2066,7 +2139,7 @@ var __assign11 = function() {
     }
     return t;
   };
-  return __assign11.apply(this, arguments);
+  return __assign10.apply(this, arguments);
 };
 var Field;
 if (isVue2) {
@@ -2077,9 +2150,9 @@ if (isVue2) {
     render: function(h2, context) {
       var props = context.props;
       var attrs = context.data.attrs;
-      var componentData = __assign11(__assign11({}, context.data), { props: {
+      var componentData = __assign10(__assign10({}, context.data), { props: {
         fieldType: "Field",
-        fieldProps: __assign11(__assign11(__assign11({}, attrs), props), getRawComponent(props))
+        fieldProps: __assign10(__assign10(__assign10({}, attrs), props), getRawComponent(props))
       } });
       return h(ReactiveField_default, componentData, context.children);
     }
@@ -2092,7 +2165,7 @@ if (isVue2) {
       return function() {
         var componentData = {
           fieldType: "Field",
-          fieldProps: __assign11(__assign11({}, props), getRawComponent(props))
+          fieldProps: __assign10(__assign10({}, props), getRawComponent(props))
         };
         return h(ReactiveField_default, componentData, context.slots);
       };
@@ -2102,8 +2175,8 @@ if (isVue2) {
 var Field_default = Field;
 
 // node_modules/@formily/vue/esm/components/RecursionField.js
-var __assign12 = function() {
-  __assign12 = Object.assign || function(t) {
+var __assign11 = function() {
+  __assign11 = Object.assign || function(t) {
     for (var s, i = 1, n = arguments.length; i < n; i++) {
       s = arguments[i];
       for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
@@ -2111,10 +2184,10 @@ var __assign12 = function() {
     }
     return t;
   };
-  return __assign12.apply(this, arguments);
+  return __assign11.apply(this, arguments);
 };
 var resolveEmptySlot = function(slots) {
-  return Object.keys(slots).length ? compatibleCreateElement(Fragment, {}, slots) : void 0;
+  return Object.keys(slots).length ? compatibleCreateElement("div", { style: "display:contents;" }, slots) : void 0;
 };
 var RecursionField = {
   name: "RecursionField",
@@ -2148,8 +2221,8 @@ var RecursionField = {
     });
     var getPropsFromSchema = function(schema) {
       var _a;
-      return (_a = schema === null || schema === void 0 ? void 0 : schema.toFieldProps) === null || _a === void 0 ? void 0 : _a.call(schema, __assign12(__assign12({}, optionsRef.value), { get scope() {
-        return __assign12(__assign12({}, optionsRef.value.scope), scopeRef.value);
+      return (_a = schema === null || schema === void 0 ? void 0 : schema.toFieldProps) === null || _a === void 0 ? void 0 : _a.call(schema, __assign11(__assign11({}, optionsRef.value), { get scope() {
+        return lazyMerge(optionsRef.value.scope, scopeRef.value);
       } }));
     };
     var fieldPropsRef = shallowRef(getPropsFromSchema(fieldSchemaRef.value));
@@ -2157,11 +2230,11 @@ var RecursionField = {
       fieldPropsRef.value = getPropsFromSchema(fieldSchemaRef.value);
     });
     var getBasePath = function() {
-      var _a, _b;
+      var _a, _b, _c, _d;
       if (props.onlyRenderProperties) {
-        return props.basePath || ((_a = parentRef === null || parentRef === void 0 ? void 0 : parentRef.value) === null || _a === void 0 ? void 0 : _a.address.concat(props.name));
+        return (_a = props.basePath) !== null && _a !== void 0 ? _a : (_b = parentRef === null || parentRef === void 0 ? void 0 : parentRef.value) === null || _b === void 0 ? void 0 : _b.address.concat(props.name);
       }
-      return props.basePath || ((_b = parentRef === null || parentRef === void 0 ? void 0 : parentRef.value) === null || _b === void 0 ? void 0 : _b.address);
+      return (_c = props.basePath) !== null && _c !== void 0 ? _c : (_d = parentRef === null || parentRef === void 0 ? void 0 : parentRef.value) === null || _d === void 0 ? void 0 : _d.address;
     };
     provide(SchemaSymbol, fieldSchemaRef);
     return function() {
@@ -2199,12 +2272,13 @@ var RecursionField = {
             }
           }
           setRender((_b = schema["x-slot"]) !== null && _b !== void 0 ? _b : "default", function(field) {
+            var _a2;
             return compatibleCreateElement(RecursionField, {
               key: "".concat(index, "-").concat(name),
               attrs: {
                 schema,
                 name,
-                basePath: (field === null || field === void 0 ? void 0 : field.address) || basePath
+                basePath: (_a2 = field === null || field === void 0 ? void 0 : field.address) !== null && _a2 !== void 0 ? _a2 : basePath
               },
               slot: schema["x-slot"]
             }, {});
@@ -2233,22 +2307,22 @@ var RecursionField = {
           if (props.onlyRenderProperties)
             return resolveEmptySlot(generateSlotsByProperties());
           return compatibleCreateElement(ObjectField_default, {
-            attrs: __assign12(__assign12({}, fieldProps), { name: props.name, basePath })
+            attrs: __assign11(__assign11({}, fieldProps), { name: props.name, basePath })
           }, generateSlotsByProperties(true));
         } else if (fieldSchemaRef.value.type === "array") {
           return compatibleCreateElement(ArrayField_default, {
-            attrs: __assign12(__assign12({}, fieldProps), { name: props.name, basePath })
+            attrs: __assign11(__assign11({}, fieldProps), { name: props.name, basePath })
           }, {});
         } else if (fieldSchemaRef.value.type === "void") {
           if (props.onlyRenderProperties)
             return resolveEmptySlot(generateSlotsByProperties());
           var slots = generateSlotsByProperties(true);
           return compatibleCreateElement(VoidField_default, {
-            attrs: __assign12(__assign12({}, fieldProps), { name: props.name, basePath })
+            attrs: __assign11(__assign11({}, fieldProps), { name: props.name, basePath })
           }, slots);
         }
         return compatibleCreateElement(Field_default, {
-          attrs: __assign12(__assign12({}, fieldProps), { name: props.name, basePath })
+          attrs: __assign11(__assign11({}, fieldProps), { name: props.name, basePath })
         }, {});
       };
       if (!fieldSchemaRef.value)
@@ -2273,8 +2347,8 @@ var resolveSchemaProps = function(props) {
 };
 
 // node_modules/@formily/vue/esm/components/SchemaField.js
-var __assign13 = function() {
-  __assign13 = Object.assign || function(t) {
+var __assign12 = function() {
+  __assign12 = Object.assign || function(t) {
     for (var s, i = 1, n = arguments.length; i < n; i++) {
       s = arguments[i];
       for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
@@ -2282,7 +2356,7 @@ var __assign13 = function() {
     }
     return t;
   };
-  return __assign13.apply(this, arguments);
+  return __assign12.apply(this, arguments);
 };
 var env = {
   nonameId: 0
@@ -2368,6 +2442,9 @@ var markupProps = {
   }
 };
 function createSchemaField(options) {
+  if (options === void 0) {
+    options = {};
+  }
   var SchemaField = {
     name: "SchemaField",
     inheritAttrs: false,
@@ -2385,13 +2462,13 @@ function createSchemaField(options) {
     setup: function(props, _a) {
       var slots = _a.slots;
       var schemaRef = computed(function() {
-        return Schema.isSchemaInstance(props.schema) ? props.schema : new Schema(__assign13({ type: "object" }, props.schema));
+        return Schema.isSchemaInstance(props.schema) ? props.schema : new Schema(__assign12({ type: "object" }, props.schema));
       });
       var scopeRef = computed(function() {
-        return __assign13(__assign13({}, options.scope), props.scope);
+        return lazyMerge(options.scope, props.scope);
       });
       var optionsRef = computed(function() {
-        return __assign13(__assign13({}, options), { components: __assign13(__assign13({}, options.components), props.components) });
+        return __assign12(__assign12({}, options), { components: __assign12(__assign12({}, options.components), props.components) });
       });
       provide(SchemaMarkupSymbol, schemaRef);
       provide(SchemaOptionsSymbol, optionsRef);
@@ -2409,7 +2486,7 @@ function createSchemaField(options) {
               }));
             }
             children.push(compatibleCreateElement(RecursionField_default, {
-              attrs: __assign13(__assign13({}, props), { schema: schemaRef.value })
+              attrs: __assign12(__assign12({}, props), { schema: schemaRef.value })
             }, {}));
             return children;
           }
@@ -2419,7 +2496,7 @@ function createSchemaField(options) {
   };
   var MarkupField = {
     name: "MarkupField",
-    props: __assign13({ type: String }, markupProps),
+    props: __assign12({ type: String }, markupProps),
     setup: function(props, _a) {
       var slots = _a.slots;
       var parentRef = inject(SchemaMarkupSymbol, null);
@@ -2453,12 +2530,12 @@ function createSchemaField(options) {
   var SchemaFieldFactory = function(type, name) {
     return {
       name,
-      props: __assign13({}, markupProps),
+      props: __assign12({}, markupProps),
       setup: function(props, _a) {
         var slots = _a.slots;
         return function() {
           return compatibleCreateElement(MarkupField, {
-            attrs: __assign13(__assign13({}, props), { type })
+            attrs: __assign12(__assign12({}, props), { type })
           }, slots);
         };
       }
@@ -2479,17 +2556,6 @@ function createSchemaField(options) {
 }
 
 // node_modules/@formily/vue/esm/components/ExpressionScope.js
-var __assign14 = function() {
-  __assign14 = Object.assign || function(t) {
-    for (var s, i = 1, n = arguments.length; i < n; i++) {
-      s = arguments[i];
-      for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-        t[p] = s[p];
-    }
-    return t;
-  };
-  return __assign14.apply(this, arguments);
-};
 var ExpressionScope = defineComponent({
   name: "ExpressionScope",
   props: ["value"],
@@ -2497,7 +2563,7 @@ var ExpressionScope = defineComponent({
     var slots = _a.slots;
     var scopeRef = inject(SchemaExpressionScopeSymbol);
     var expressionScopeRef = computed(function() {
-      return __assign14(__assign14({}, scopeRef.value), props.value);
+      return lazyMerge(scopeRef.value, props.value);
     });
     provide(SchemaExpressionScopeSymbol, expressionScopeRef);
     return function() {

@@ -2,8 +2,8 @@
   <FormProvider :form="form">
     <FormLayout :label-col="6" :wrapper-col="10">
       <SchemaField :schema="schema" :scope="{ formCollapse }" />
-      <FormButtonGroup alignFormItem>
-        <ElButton
+      <FormButtonGroup align-form-item>
+        <Button
           @click="
             () => {
               form.query('tab3').take((field) => {
@@ -13,8 +13,8 @@
           "
         >
           显示/隐藏最后一个Tab
-        </ElButton>
-        <ElButton
+        </Button>
+        <Button
           @click="
             () => {
               formCollapse.toggleActiveKey('tab2')
@@ -22,25 +22,27 @@
           "
         >
           切换第二个Tab
-        </ElButton>
+        </Button>
         <Submit @submit="log">提交</Submit>
       </FormButtonGroup>
     </FormLayout>
   </FormProvider>
 </template>
 
-<script setup lang="ts">
+<script lang="ts">
+/* eslint-disable vue/no-reserved-component-names */
 import { createForm } from '@formily/core'
 import { FormProvider, createSchemaField } from '@formily/vue'
 import {
   FormItem,
   FormCollapse,
   FormButtonGroup,
+  Form,
   FormLayout,
   Submit,
   Input,
-} from 'arco-vue-formily'
-import { ElButton } from 'element-plus'
+} from 'arco-design-web-vue-formily'
+import { Button } from '@arco-design/web-vue'
 
 const { SchemaField } = createSchemaField({
   components: {
@@ -64,9 +66,9 @@ const schema = {
       properties: {
         tab1: {
           type: 'void',
-          'x-component': 'FormCollapse.Item',
+          'x-component': 'FormCollapse.CollapsePanel',
           'x-component-props': {
-            title: 'A1',
+            header: 'A1',
           },
           properties: {
             aaa: {
@@ -80,9 +82,9 @@ const schema = {
         },
         tab2: {
           type: 'void',
-          'x-component': 'FormCollapse.Item',
+          'x-component': 'FormCollapse.CollapsePanel',
           'x-component-props': {
-            title: 'A2',
+            header: 'A2',
           },
           properties: {
             bbb: {
@@ -96,9 +98,9 @@ const schema = {
         },
         tab3: {
           type: 'void',
-          'x-component': 'FormCollapse.Item',
+          'x-component': 'FormCollapse.CollapsePanel',
           'x-component-props': {
-            title: 'A3',
+            header: 'A3',
           },
           properties: {
             ccc: {
@@ -115,11 +117,31 @@ const schema = {
   },
 }
 
-const form = createForm()
-const formCollapse = FormCollapse.createFormCollapse()
+export default {
+  components: {
+    FormButtonGroup,
+    Button,
+    Submit,
+    SchemaField,
+    FormProvider,
+    FormLayout,
+  },
 
-const log = (values) => {
-  console.log(values)
+  data() {
+    const form = createForm()
+    const formCollapse = FormCollapse.createFormCollapse()
+
+    return {
+      schema,
+      form,
+      formCollapse,
+    }
+  },
+  methods: {
+    log(values) {
+      console.log(values)
+    },
+  },
 }
 </script>
 

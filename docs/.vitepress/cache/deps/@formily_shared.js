@@ -33,9 +33,11 @@ import {
   isValid,
   isWeakMap,
   isWeakSet,
+  lazyMerge,
   lowerCase,
   map,
   merge,
+  move,
   paramCase,
   pascalCase,
   reduce,
@@ -45,8 +47,8 @@ import {
   toArr,
   uid,
   upperCase
-} from "./chunk-AKVXTLRZ.js";
-import "./chunk-PLDDJCW6.js";
+} from "./chunk-4NCPBOGJ.js";
+import "./chunk-PR4QN5HX.js";
 export {
   Path as FormPath,
   Subscribable,
@@ -82,9 +84,11 @@ export {
   isValid,
   isWeakMap,
   isWeakSet,
+  lazyMerge,
   lowerCase,
   map,
   merge,
+  move,
   paramCase,
   pascalCase,
   reduce,

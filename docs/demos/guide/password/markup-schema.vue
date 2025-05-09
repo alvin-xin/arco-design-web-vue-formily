@@ -2,7 +2,7 @@
   <FormProvider :form="form">
     <SchemaField>
       <SchemaStringField
-        name="password"
+        name="input"
         title="密码框"
         x-decorator="FormItem"
         x-component="Password"
@@ -12,20 +12,30 @@
   </FormProvider>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts">
 import { createForm } from '@formily/core'
 import { createSchemaField, FormProvider } from '@formily/vue'
-import { FormItem, Password, Submit } from 'arco-vue-formily'
+import { FormItem, Password, Submit } from 'arco-design-web-vue-formily'
 
 const form = createForm()
-const { SchemaField, SchemaStringField } = createSchemaField({
+const fields = createSchemaField({
   components: {
     FormItem,
     Password,
   },
 })
 
-const log = (value) => {
-  console.log(value)
+export default {
+  components: { FormProvider, ...fields, Submit },
+  data() {
+    return {
+      form,
+    }
+  },
+  methods: {
+    log(value) {
+      console.log(value)
+    },
+  },
 }
 </script>

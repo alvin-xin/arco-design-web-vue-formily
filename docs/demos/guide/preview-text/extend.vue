@@ -1,9 +1,9 @@
 <template>
   <Form
-    :labelCol="6"
-    :wrapperCol="10"
+    :label-col="6"
+    :wrapper-col="10"
     :form="form"
-    :previewTextPlaceholder="vnode"
+    :preview-text-placeholder="vnode"
   >
     <SchemaField>
       <SchemaStringField
@@ -15,7 +15,7 @@
       <SchemaStringField
         x-decorator="FormItem"
         title="选择项预览"
-        x-component="Select"
+        x-component="PreviewText.Select"
         :x-component-props="{
           multiple: true,
         }"
@@ -31,32 +31,28 @@
       <SchemaStringField
         x-decorator="FormItem"
         title="日期预览"
-        x-component="DatePicker"
+        x-component="PreviewText.DatePicker"
         default="2020-11-23 22:15:20"
       />
       <SchemaStringField
         x-decorator="FormItem"
         title="日期范围预览"
-        x-component="DatePicker"
-        :x-component-props="{ type: 'dates' }"
+        x-component="PreviewText.DatePicker"
         :default="['2020-11-23 22:15:20', '2020-11-24 22:15:20']"
       />
       <SchemaStringField
         x-decorator="FormItem"
         title="Cascader预览"
-        x-component="Cascader"
+        x-component="PreviewText.Cascader"
         :default="['hangzhou', 'yuhang']"
         :enum="[
-          {
-            label: '杭州',
-            value: 'hangzhou',
-            children: [{ label: '余杭', value: 'yuhang' }],
-          },
+          { label: '杭州', value: 'hangzhou' },
+          { label: '余杭', value: 'yuhang' },
         ]"
       />
     </SchemaField>
-    <FormButtonGroup alignFormItem>
-      <ElButton
+    <FormButtonGroup align-form-item>
+      <Button
         @click="
           () => {
             form.setState((state) => {
@@ -64,13 +60,14 @@
             })
           }
         "
-        >切换阅读态</ElButton
+        >切换阅读态</Button
       >
     </FormButtonGroup>
   </Form>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts">
+/* eslint-disable vue/no-reserved-component-names */
 import { h } from 'vue'
 import { createForm } from '@formily/core'
 import { createSchemaField } from '@formily/vue'
@@ -78,26 +75,32 @@ import {
   Form,
   FormItem,
   Input,
-  Select,
-  DatePicker,
-  Cascader,
-  TimePicker,
+  PreviewText,
   FormButtonGroup,
-} from 'arco-vue-formily'
-import { ElButton } from 'element-plus'
+} from 'arco-design-web-vue-formily'
+import { Button } from '@arco-design/web-vue'
 
-const { SchemaField, SchemaStringField } = createSchemaField({
+const fields = createSchemaField({
   components: {
     FormItem,
     Input,
-    Select,
-    DatePicker,
-    Cascader,
-    TimePicker,
+    PreviewText,
   },
 })
 
-const form = createForm({ readPretty: true })
-
-const vnode = () => h('div', {}, '123')
+export default {
+  components: {
+    Form,
+    FormButtonGroup,
+    Button,
+    ...fields,
+  },
+  data() {
+    const form = createForm()
+    return {
+      form,
+      vnode: () => h('div', {}, '123'),
+    }
+  },
+}
 </script>

@@ -1,6 +1,6 @@
 <template>
   <FormProvider :form="form">
-    <FormLayout :labelCol="6" :wrapperCol="10">
+    <FormLayout :label-col="6" :wrapper-col="10">
       <SchemaField>
         <SchemaStringField
           required
@@ -23,7 +23,7 @@
   </FormProvider>
 </template>
 
-<script>
+<script lang="ts">
 import { createForm } from '@formily/core'
 import { FormProvider, createSchemaField } from '@formily/vue'
 import {
@@ -34,7 +34,7 @@ import {
   FormItem,
   Input,
   Select,
-} from 'arco-vue-formily'
+} from 'arco-design-web-vue-formily'
 
 const fields = createSchemaField({ components: { FormItem, Input, Select } })
 

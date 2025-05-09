@@ -1,7 +1,7 @@
 <template>
   <FormProvider :form="form">
     <Field
-      name="password"
+      name="input"
       title="密码框"
       :decorator="[FormItem]"
       :component="[Password]"
@@ -10,14 +10,26 @@
   </FormProvider>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts">
 import { createForm } from '@formily/core'
 import { FormProvider, Field } from '@formily/vue'
-import { FormItem, Password, Submit } from 'arco-vue-formily'
+import { FormItem, Password, Submit } from 'arco-design-web-vue-formily'
 
 const form = createForm()
 
-const log = (value) => {
-  console.log(value)
+export default {
+  components: { FormProvider, Field, Submit },
+  data() {
+    return {
+      FormItem,
+      Password,
+      form,
+    }
+  },
+  methods: {
+    log(value) {
+      console.log(value)
+    },
+  },
 }
 </script>

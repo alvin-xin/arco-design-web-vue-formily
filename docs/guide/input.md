@@ -16,4 +16,4 @@
 
 ## API
 
-参考 [https://element-plus.gitee.io/zh-CN/component/input.html](https://element-plus.gitee.io/zh-CN/component/input.html)
+参考 [https://antdv.com/components/input-cn](https://antdv.com/components/input-cn)

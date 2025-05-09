@@ -13,20 +13,31 @@
   </Form>
 </template>
 
-<script setup lang="ts">
+<script lang="ts">
 import { createForm } from '@formily/core'
 import { createSchemaField } from '@formily/vue'
-import { Form, FormItem, Input, Submit } from 'arco-vue-formily'
+import { Form, FormItem, Input, Submit } from 'arco-design-web-vue-formily'
 
 const form = createForm()
-const { SchemaField, SchemaStringField } = createSchemaField({
+const fields = createSchemaField({
   components: {
     FormItem,
     Input,
   },
 })
 
-const onSubmit = (value) => {
-  console.log(value)
+export default {
+  // eslint-disable-next-line vue/no-reserved-component-names
+  components: { Form, ...fields, Submit },
+  data() {
+    return {
+      form,
+    }
+  },
+  methods: {
+    onSubmit(value) {
+      console.log(value)
+    },
+  },
 }
 </script>

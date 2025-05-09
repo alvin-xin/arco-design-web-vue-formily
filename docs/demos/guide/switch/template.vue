@@ -10,14 +10,26 @@
   </FormProvider>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts">
 import { createForm } from '@formily/core'
 import { FormProvider, Field } from '@formily/vue'
-import { FormItem, Switch, Submit } from 'arco-vue-formily'
+import { FormItem, Switch, Submit } from 'arco-design-web-vue-formily'
 
 const form = createForm()
 
-const log = (value) => {
-  console.log(value)
+export default {
+  components: { FormProvider, Field, Submit },
+  data() {
+    return {
+      FormItem,
+      Switch,
+      form,
+    }
+  },
+  methods: {
+    log(value) {
+      console.log(value)
+    },
+  },
 }
 </script>

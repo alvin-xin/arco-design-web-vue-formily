@@ -134,7 +134,7 @@
   </FormProvider>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts">
 import { createForm } from '@formily/core'
 import { FormProvider, createSchemaField } from '@formily/vue'
 import {
@@ -146,15 +146,10 @@ import {
   Space,
   DatePicker,
   ArrayItems,
-} from 'arco-vue-formily'
+} from 'arco-design-web-vue-formily'
+import { Button } from '@arco-design/web-vue'
 
-const {
-  SchemaField,
-  SchemaArrayField,
-  SchemaObjectField,
-  SchemaVoidField,
-  SchemaStringField,
-} = createSchemaField({
+const SchemaField = createSchemaField({
   components: {
     FormItem,
     Space,
@@ -164,10 +159,27 @@ const {
     ArrayItems,
   },
 })
-const form = createForm()
 
-const log = (values) => {
-  console.log(values)
+export default {
+  components: {
+    FormProvider,
+    FormButtonGroup,
+    Submit,
+    ...SchemaField,
+  },
+
+  data() {
+    const form = createForm()
+
+    return {
+      form,
+    }
+  },
+  methods: {
+    log(values) {
+      console.log(values)
+    },
+  },
 }
 </script>
 

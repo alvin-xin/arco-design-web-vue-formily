@@ -1,8 +1,8 @@
 <template>
   <FormProvider :form="form">
     <SchemaField :schema="schema" :scope="{ formTab }" />
-    <FormButtonGroup alignFormItem>
-      <ElButton
+    <FormButtonGroup align-form-item>
+      <Button
         @click="
           () => {
             form.query('tab3').take((field) => {
@@ -12,8 +12,8 @@
         "
       >
         显示/隐藏最后一个Tab
-      </ElButton>
-      <ElButton
+      </Button>
+      <Button
         @click="
           () => {
             formTab.setActiveKey('tab2')
@@ -21,13 +21,13 @@
         "
       >
         切换第二个Tab
-      </ElButton>
+      </Button>
       <Submit @submit="log">提交</Submit>
     </FormButtonGroup>
   </FormProvider>
 </template>
 
-<script setup lang="ts">
+<script lang="ts">
 import { createForm } from '@formily/core'
 import { FormProvider, createSchemaField } from '@formily/vue'
 import {
@@ -36,8 +36,8 @@ import {
   FormButtonGroup,
   Submit,
   Input,
-} from 'arco-vue-formily'
-import { ElButton } from 'element-plus'
+} from 'arco-design-web-vue-formily'
+import { Button } from '@arco-design/web-vue'
 
 const { SchemaField } = createSchemaField({
   components: {
@@ -61,7 +61,7 @@ const schema = {
           type: 'void',
           'x-component': 'FormTab.TabPane',
           'x-component-props': {
-            label: 'A1',
+            tab: 'A1',
           },
           properties: {
             aaa: {
@@ -77,7 +77,7 @@ const schema = {
           type: 'void',
           'x-component': 'FormTab.TabPane',
           'x-component-props': {
-            label: 'A2',
+            tab: 'A2',
           },
           properties: {
             bbb: {
@@ -93,7 +93,7 @@ const schema = {
           type: 'void',
           'x-component': 'FormTab.TabPane',
           'x-component-props': {
-            label: 'A3',
+            tab: 'A3',
           },
           properties: {
             ccc: {
@@ -110,11 +110,31 @@ const schema = {
   },
 }
 
-const form = createForm()
-const formTab = FormTab.createFormTab()
+export default {
+  components: {
+    FormProvider,
+    FormButtonGroup,
+    // eslint-disable-next-line vue/no-reserved-component-names
+    Button,
+    Submit,
+    SchemaField,
+  },
 
-const log = (values) => {
-  console.log(values)
+  data() {
+    const form = createForm()
+    const formTab = FormTab.createFormTab()
+
+    return {
+      schema,
+      form,
+      formTab,
+    }
+  },
+  methods: {
+    log(values) {
+      console.log(values)
+    },
+  },
 }
 </script>
 

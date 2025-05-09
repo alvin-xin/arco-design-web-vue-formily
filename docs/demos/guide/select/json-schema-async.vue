@@ -5,11 +5,11 @@
   </Form>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts">
 import { createForm } from '@formily/core'
 import { createSchemaField } from '@formily/vue'
 import { action } from '@formily/reactive'
-import { Form, FormItem, Select, Submit, Reset } from 'arco-vue-formily'
+import { Form, FormItem, Select, Submit, Reset } from 'arco-design-web-vue-formily'
 
 const schema = {
   type: 'object',
@@ -96,7 +96,21 @@ const { SchemaField } = createSchemaField({
   },
 })
 
-const onSubmit = (value) => {
-  console.log(value)
+export default {
+  // eslint-disable-next-line vue/no-reserved-component-names
+  components: { Form, SchemaField, Submit },
+  data() {
+    return {
+      form,
+      schema,
+    }
+  },
+  methods: {
+    useAsyncDataSource,
+    loadData,
+    onSubmit(value) {
+      console.log(value)
+    },
+  },
 }
 </script>

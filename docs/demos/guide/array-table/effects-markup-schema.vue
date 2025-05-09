@@ -11,6 +11,10 @@
         name="array"
         x-decorator="FormItem"
         x-component="ArrayTable"
+        :x-component-props="{
+          pagination: { pageSize: 10 },
+          scroll: { x: 800 },
+        }"
       >
         <SchemaObjectField>
           <SchemaVoidField
@@ -79,7 +83,8 @@
   </FormProvider>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts">
+import type { Field } from '@formily/core'
 import { createForm, onFieldChange, onFieldReact } from '@formily/core'
 import { FormProvider, createSchemaField } from '@formily/vue'
 import {
@@ -89,16 +94,9 @@ import {
   Input,
   Editable,
   Switch,
-} from 'arco-vue-formily'
+} from 'arco-design-web-vue-formily'
 
-const {
-  SchemaField,
-  SchemaArrayField,
-  SchemaObjectField,
-  SchemaVoidField,
-  SchemaStringField,
-  SchemaBooleanField,
-} = createSchemaField({
+const fields = createSchemaField({
   components: {
     FormItem,
     ArrayTable,
@@ -108,26 +106,36 @@ const {
   },
 })
 
-const form = createForm({
-  effects: () => {
-    //主动联动模式
-    onFieldChange('hideFirstColumn', ['value'], (field) => {
-      field.query('array.column3').take((target) => {
-        console.log('target', target)
-        target.visible = !field.value
-      })
-      field.query('array.*.a2').take((target) => {
-        target.visible = !field.value
-      })
+export default {
+  components: { FormProvider, Submit, ...fields },
+  data() {
+    const form = createForm({
+      effects: () => {
+        //主动联动模式
+        onFieldChange('hideFirstColumn', ['value'], (field: Field) => {
+          field.query('array.column3').take((target) => {
+            console.log('target', target)
+            target.visible = !field.value
+          })
+          field.query('array.*.a2').take((target) => {
+            target.visible = !field.value
+          })
+        })
+        //被动联动模式
+        onFieldReact('array.*.a2', (field) => {
+          field.visible = !field.query('.a1').get('value')
+        })
+      },
     })
-    //被动联动模式
-    onFieldReact('array.*.a2', (field) => {
-      field.visible = !field.query('.a1').get('value')
-    })
-  },
-})
 
-const log = (...v) => {
-  console.log(...v)
+    return {
+      form,
+    }
+  },
+  methods: {
+    log(...v) {
+      console.log(...v)
+    },
+  },
 }
 </script>

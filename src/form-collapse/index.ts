@@ -125,6 +125,8 @@ const _FormCollapse = connect(defineComponent({
             {
               class: [`${prefixCls}-errors-badge`],
               count: errors.length,
+              size: 'mini',
+              dot: true,
             },
             { default: () => [header] }
           )

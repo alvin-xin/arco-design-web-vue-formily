@@ -56,6 +56,8 @@ export const ArrayTabs = observer(
               {
                 class: `${prefixCls}-errors-badge`,
                 count: errors.length,
+                size: 'mini',
+                dot: true,
               },
               {
                 default: () => [tab],
