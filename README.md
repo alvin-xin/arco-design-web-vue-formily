@@ -18,7 +18,8 @@
 
 这是一个结合了 Formily & @arco-design/web-vue & Vue3 的超酷组件库. 与官方版本 antd 适配库保持一致性适配。
 
-<img src="./xiaoguotu.png" />
+![效果图](./xiaoguotu.png)
+
 
 ## 特性
 
