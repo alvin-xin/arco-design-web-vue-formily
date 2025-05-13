@@ -406,10 +406,10 @@ import {
   TimePicker,
 } from 'arco-design-web-vue-formily'
 // import { CheckOutlined } from '@ant-design/icons-vue'
-import { IconCheck } from "@arco-design/web-vue/es/icon"
+import { IconCheckCircleFill } from "@arco-design/web-vue/es/icon"
 
 const SuccessIcon = () => {
-  return h(IconCheck, { style: { color: '#8AE65C' } })
+  return h(IconCheckCircleFill, { style: { color: 'rgb(var(--success-6))', marginLeft: '4px' } })
 }
 
 const Title = (props, { slots }) => {

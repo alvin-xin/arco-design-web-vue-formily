@@ -2,7 +2,7 @@ import { composeExport, getStyleNumber, resolveComponent, stylePrefix } from "..
 import { Component, Ref, defineComponent, h, onBeforeUnmount, provide, ref, watch } from "vue";
 import { FormLayoutShallowContext, useFormLayout } from "../form-layout";
 import { Tooltip as ArcoTooltip } from "@arco-design/web-vue"
-import { IconCloseCircle, IconCheckCircle, IconExclamationCircle, IconQuestionCircle } from "@arco-design/web-vue/es/icon";
+import { IconCloseCircleFill, IconCheckCircleFill, IconExclamationCircleFill, IconQuestionCircleFill } from "@arco-design/web-vue/es/icon";
 import { connect, mapProps } from "@formily/vue";
 import { isVoidField } from "@formily/core";
 
@@ -88,10 +88,10 @@ const useOverflow = (containerRef: Ref<HTMLElement>) => {
 
 const ICON_MAP = {
   // info: () => h(IconInfoCircleFill, {}, {}),
-  info: () => h(IconQuestionCircle, {}, {}),
-  error: () => h(IconCloseCircle, {}, {}),
-  success: () => h(IconCheckCircle, {}, {}),
-  warning: () => h(IconExclamationCircle, {}, {})
+  info: () => h(IconQuestionCircleFill, {}, {}),
+  error: () => h(IconCloseCircleFill, {}, {}),
+  success: () => h(IconCheckCircleFill, {}, {}),
+  warning: () => h(IconExclamationCircleFill, {}, {})
 
 }
 
@@ -134,7 +134,7 @@ export const FormBaseItem = defineComponent({
     const deepLayoutRef = useFormLayout()
     const prefixCls = `${stylePrefix}-form-item`
 
-    const containerRef = ref<HTMLElement>(null)
+    const containerRef = ref<HTMLElement>(null as any)
     const overflow = useOverflow(containerRef)
     
     provide(FormLayoutShallowContext, ref({}))
@@ -416,6 +416,7 @@ export const FormBaseItem = defineComponent({
                             { class: `${prefixCls}-feedback-icon` },
                             {
                               default: () => [
+                                // h('div', {}, resolveComponent(feedbackIcon)),
                                 typeof feedbackIcon === 'string'
                                   ? h('i', { class: feedbackIcon }, {})
                                   : resolveComponent(feedbackIcon),

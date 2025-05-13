@@ -284,22 +284,27 @@ const ArrayBaseRemove = defineComponent({
     const prefixCls = `${stylePrefix}-array-base`
     return () => {
       if (base?.field.value.pattern !== 'editable') return null
-      return h(IconDelete, {
-        class: `${prefixCls}-remove`,
-        attrs,
-        onClick: (e: MouseEvent) => {
-          e.stopPropagation()
-          if (Array.isArray(base?.keyMap)) {
-            base?.keyMap?.splice(indexRef.value, 1)
-          }
-
-          base?.field.value.remove(indexRef.value as number)
-          base?.attrs?.remove?.(indexRef.value as number)
-
-          if (typeof attrs.onClick === 'function') {
-            attrs.onClick(e)
-          }
-        },
+      return h(Button, {
+        size: 'mini',
+        type: 'text'
+      }, {
+        icon: () => h(IconDelete, {
+          class: `${prefixCls}-remove`,
+          attrs,
+          onClick: (e: MouseEvent) => {
+            e.stopPropagation()
+            if (Array.isArray(base?.keyMap)) {
+              base?.keyMap?.splice(indexRef.value, 1)
+            }
+  
+            base?.field.value.remove(indexRef.value as number)
+            base?.attrs?.remove?.(indexRef.value as number)
+  
+            if (typeof attrs.onClick === 'function') {
+              attrs.onClick(e)
+            }
+          },
+        })
       })
     }
   },
@@ -314,26 +319,32 @@ const ArrayBaseMoveDown = defineComponent({
     const prefixCls = `${stylePrefix}-array-base`
     return () => {
       if (base?.field.value.pattern !== 'editable') return null
-      return h(IconArrowDown, {
-        class: `${prefixCls}-move-down`,
-        attrs,
-        onClick: (e: MouseEvent) => {
-          e.stopPropagation()
-          if (Array.isArray(base?.keyMap)) {
-            base.keyMap.splice(
-              indexRef.value + 1,
-              0,
-              base.keyMap.splice(indexRef.value, 1)[0]
-            )
-          }
 
-          base?.field.value.moveDown(indexRef.value as number)
-          base?.attrs?.moveDown?.(indexRef.value as number)
-
-          if (typeof attrs.onClick === 'function') {
-            attrs.onClick(e)
-          }
-        },
+      return h(Button, {
+        size: 'mini',
+        type: 'text'
+      }, {
+        icon: () => h(IconArrowDown, {
+          class: `${prefixCls}-move-down`,
+          attrs,
+          onClick: (e: MouseEvent) => {
+            e.stopPropagation()
+            if (Array.isArray(base?.keyMap)) {
+              base.keyMap.splice(
+                indexRef.value + 1,
+                0,
+                base.keyMap.splice(indexRef.value, 1)[0]
+              )
+            }
+  
+            base?.field.value.moveDown(indexRef.value as number)
+            base?.attrs?.moveDown?.(indexRef.value as number)
+  
+            if (typeof attrs.onClick === 'function') {
+              attrs.onClick(e)
+            }
+          },
+        })
       })
     }
   },
@@ -348,26 +359,32 @@ const ArrayBaseMoveUp = defineComponent({
     const prefixCls = `${stylePrefix}-array-base`
     return () => {
       if (base?.field.value.pattern !== 'editable') return null
-      return h(IconArrowUp, {
-        class: `${prefixCls}-move-up`,
-        attrs,
-        onClick: (e: MouseEvent) => {
-          e.stopPropagation()
-          if (Array.isArray(base?.keyMap)) {
-            base.keyMap.splice(
-              indexRef.value - 1,
-              0,
-              base.keyMap.splice(indexRef.value, 1)[0]
-            )
-          }
 
-          base?.field.value.moveUp(indexRef.value as number)
-          base?.attrs?.moveUp?.(indexRef.value as number)
-
-          if (typeof attrs.onClick === 'function') {
-            attrs.onClick(e)
-          }
-        },
+      return h(Button, {
+        size: 'mini',
+        type: 'text'
+      }, {
+        icon: () => h(IconArrowUp, {
+          class: `${prefixCls}-move-up`,
+          attrs,
+          onClick: (e: MouseEvent) => {
+            e.stopPropagation()
+            if (Array.isArray(base?.keyMap)) {
+              base.keyMap.splice(
+                indexRef.value - 1,
+                0,
+                base.keyMap.splice(indexRef.value, 1)[0]
+              )
+            }
+  
+            base?.field.value.moveUp(indexRef.value as number)
+            base?.attrs?.moveUp?.(indexRef.value as number)
+  
+            if (typeof attrs.onClick === 'function') {
+              attrs.onClick(e)
+            }
+          },
+        })
       })
     }
   },

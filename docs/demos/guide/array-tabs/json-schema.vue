@@ -48,6 +48,8 @@ export default {
           items: {
             type: 'string',
             'x-decorator': 'FormItem',
+            title: '字符串',
+            name: 'aaa',
             required: true,
             'x-component': 'Input',
           },

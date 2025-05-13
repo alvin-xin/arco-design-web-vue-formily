@@ -378,11 +378,15 @@ const ArrayTableInner = observer(
           })
 
           const renderTable = (dataSource?: any[], pager?: () => VNode) => {
+
+            console.log("render Table: ", {  ...attrs, data: dataSource, columns, rowKey: '_X_ROW_KEY', pagination: pagination ? pagination : false, });
+            
+
             return h(
               'div', 
               { class: prefixCls }, 
               h(ArrayBase, { keyMap }, () => [
-                h(Table, {  ...attrs, data: dataSource, columns, rowKey: '_X_ROW_KEY', pagination: pagination ? pagination : false, }),
+                h(Table, {  ...attrs, data: dataSource, columns, rowKey: '_X_ROW_KEY', pagination: pagination ? pagination : false, bordered: false }),
                 h(
                   'div',
                   {

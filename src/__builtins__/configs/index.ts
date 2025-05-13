@@ -1,1 +1,1 @@
-export const stylePrefix = 'formily__arco-design-web-vue'
+export const stylePrefix = 'formily-arco-design'

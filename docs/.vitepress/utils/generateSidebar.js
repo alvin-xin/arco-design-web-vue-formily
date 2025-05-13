@@ -7,6 +7,7 @@ export function generateSidebar(dir = '../../guide') {
   const getItems = (currentPath) => {
     return fs.readdirSync(currentPath)
       .filter(item => !item.startsWith('.') && (item.endsWith('.md') || fs.statSync(path.join(currentPath, item)).isDirectory()))
+      .filter(item => !['index.md', 'form-drawer.md', 'form-dialog.md'].includes(item))
       .map(item => {
         const itemPath = path.join(currentPath, item)
         if (fs.statSync(itemPath).isDirectory()) {

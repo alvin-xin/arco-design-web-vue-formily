@@ -1,0 +1,48 @@
+@form-item-cls: ~'@{formily-prefix}-form-item';
+
+
+@font-size-base: 14px;
+@form-item-margin-bottom: 24px;
+@height-base: 32px;
+@background-color-light: #f5f5f5;
+@ant-prefix: ant;
+@heading-color: rgba(0, 0, 0, 0.85);
+@text-color-secondary: rgba(0, 0, 0, 0.45);
+@font-size-sm: 12px;
+@height-sm: 24px;
+@font-size-lg: 16px;
+@height-lg: 40px;
+@border-color-base: #d9d9d9;
+@error-color: rgb(var(--danger-6)); // #ff4d4f;
+@form-error-input-bg: #fff2f0;
+@warning-color: rgb(var(--warning-6)); // #faad14;
+@form-warning-input-bg: #fffbe6;
+@success-color: rgb(var(--success-6)); // #52c41a;
+
+
+
+.hover(@color: @border-color-base) {
+  // border-color: @color;
+  // transition: all 0.3s ease;
+
+  // border-radius: 2px;
+  // border: 1px solid @color;
+  // padding-left: 12px;
+  // transition: .3s all;
+}
+
+
+
+
+.active(@color: @error-color) {
+  // flex: 1;
+  // position: relative;
+  // display: flex;
+  // align-items: center;
+
+  position: relative;
+  // background-color: #fff;
+  border: 1px solid #d9d9d9;
+  border-radius: 2px;
+  transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+}

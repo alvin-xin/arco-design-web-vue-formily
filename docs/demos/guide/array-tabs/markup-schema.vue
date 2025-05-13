@@ -10,6 +10,8 @@
       >
         <SchemaStringField
           x-decorator="FormItem"
+          title="AAA"
+          name="aaa"
           required
           x-component="Input"
         />

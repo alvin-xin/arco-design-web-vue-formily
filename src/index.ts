@@ -1,3 +1,5 @@
+import "./style"
+
 export * from './array-cards'
 export * from './array-collapse'
 export * from './array-items'
